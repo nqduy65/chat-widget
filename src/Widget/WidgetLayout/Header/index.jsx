@@ -27,6 +27,9 @@ const dropdownMenu = [
   },
 ];
 
+const roles = ["Professor", "Assistant", "Friend"];
+const models = ["Chat GPT 3.5", "Chat GPT 4"];
+
 export const Header = () => {
   const dispatch = useDispatch();
   const appContext = useContext(AppContext);
@@ -42,9 +45,29 @@ export const Header = () => {
   
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("Professor");
+  const [remind, setRemind] = useState(false);
+  const [remindTime, setRemindTime] = useState("");
+  const [selectedModel, setSelectedModel] = useState("Chat GPT 3.5");
   const dropdownRef = useDetectClickOutside({
     setShowModal: setShowDropdown,
   });
+
+  const handleRoleChange = (event) => {
+    setSelectedRole(event.target.value);
+  };
+
+  const handleRemindToggle = () => {
+    setRemind(!remind);
+  };
+
+  const handleRemindTimeChange = (event) => {
+    setRemindTime(event.target.value);
+  };
+
+  const handleModelChange = (event) => {
+    setSelectedModel(event.target.value);
+  };
 
   const handleCloseButton = () => {
     dispatch(setToggleWidget(false));
@@ -55,9 +78,10 @@ export const Header = () => {
     dispatch(removeAllMessages());
     dispatch(toggleBotTyping(false));
     dispatch(toggleUserTyping(true));
-    dispatch(setUserTypingPlaceholder("Type you message..."));
+    dispatch(setUserTypingPlaceholder("Type your message..."));
     setShowDropdown(!showDropdown);
   };
+
   const handleRestartButton = () => {
     dispatch(resetMessageState());
     setShowDropdown(!showDropdown);
@@ -70,14 +94,15 @@ export const Header = () => {
       })
     );
   };
+
   return (
     <>
       <div
-        className="relative flex h-[20%]  cursor-default items-center space-x-4  rounded-t-[1.8rem]  p-2 shadow-lg drop-shadow"
+        className="relative flex h-[20%] cursor-default items-center space-x-4 rounded-t-[1.8rem] p-2 shadow-lg drop-shadow"
         style={{ backgroundColor, color: textColor }}
       >
         <div
-          className="shrink-0 rounded-full border-[1px]  p-2"
+          className="shrink-0 rounded-full border-[1px] p-2"
           style={{ borderColor: textColor, borderWidth: enableBotAvatarBorder }}
         >
           <img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />
@@ -93,13 +118,13 @@ export const Header = () => {
             setShowDropdown(!showDropdown);
           }}
         >
-          <Bars3BottomRightIcon className=" h-7 w-7" />
+          <Bars3BottomRightIcon className="h-7 w-7" />
         </motion.div>
       </div>
       {showDropdown && (
         <div
           id="dropdown"
-          className=" absolute right-5 top-16 z-50 w-fit cursor-default  divide-y divide-gray-100 rounded-xl bg-white shadow-lg"
+          className="absolute right-5 top-16 z-50 w-fit cursor-default divide-y divide-gray-100 rounded-xl bg-white shadow-lg"
           ref={dropdownRef}
         >
           <ul
@@ -111,6 +136,58 @@ export const Header = () => {
               border: `1px solid ${textColor}`,
             }}
           >
+            <li className="p-2">
+              <label htmlFor="role" className="mr-2">Role:</label>
+              <select
+                id="role"
+                value={selectedRole}
+                onChange={handleRoleChange}
+                className="rounded-lg border p-1"
+                style={{ color: textColor, borderColor: textColor }}
+              >
+                {roles.map((role, idx) => (
+                  <option key={idx} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+            </li>
+            <li className="p-2">
+              <div className="flex items-center">
+                <label htmlFor="remind" className="mr-2">Remind:</label>
+                <input
+                  type="checkbox"
+                  id="remind"
+                  checked={remind}
+                  onChange={handleRemindToggle}
+                />
+                {remind && (
+                  <input
+                    type="time"
+                    value={remindTime}
+                    onChange={handleRemindTimeChange}
+                    className="ml-2 rounded-lg border p-1"
+                    style={{ color: textColor, borderColor: textColor }}
+                  />
+                )}
+              </div>
+            </li>
+            <li className="p-2">
+              <label htmlFor="model" className="mr-2">Model:</label>
+              <select
+                id="model"
+                value={selectedModel}
+                onChange={handleModelChange}
+                className="rounded-lg border p-1"
+                style={{ color: textColor, borderColor: textColor }}
+              >
+                {models.map((model, idx) => (
+                  <option key={idx} value={model}>
+                    {model}
+                  </option>
+                ))}
+              </select>
+            </li>
             {dropdownMenu.map((item, idx) => {
               const { title } = item;
               return (

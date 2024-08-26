@@ -18,7 +18,7 @@ export const BotTyping = () => {
           />
         </div>
         <div
-          className={`flex w-fit  space-x-2 self-start whitespace-pre-line break-words rounded-tl-[20px]  rounded-br-[25px] rounded-tr-[20px] rounded-bl-[5px] px-5 py-3 text-sm text-white`}
+          className={`flex w-fit  space-x-2 self-start whitespace-pre-line break-words rounded-bl-[5px]  rounded-br-[25px] rounded-tl-[20px] rounded-tr-[20px] px-5 py-3 text-sm text-white`}
           style={{ backgroundColor: botMsgBackgroundColor }}
         >
           <div
