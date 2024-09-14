@@ -17,15 +17,21 @@ export const getBotResponse = async ({
 }) => {
   try {
     const response = await axios({
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       method: "post",
       url: rasaServerUrl,
       data: {
-        sender,
-        message,
-        metadata,
+        content: message,
+        chatId: 2,
+        role: 1,
+        courseId: 11,
       },
     });
-    return response.data;
+    console.log("response", response);
+    return response.data.message;
   } catch (error) {
     console.log("error occurred fetching bot response", error);
     return [];
