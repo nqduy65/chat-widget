@@ -7,5 +7,6 @@ export const formattedTs = (ts) => {
 };
 
 export const MardownText = ({text}) => {
+  console.log({text});
   return <ReactMarkdown children={text} remarkPlugins={[remarkGfm]}></ReactMarkdown>;
 };

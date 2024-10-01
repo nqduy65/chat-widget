@@ -27,7 +27,7 @@ export const getBotResponse = async ({
         content: message,
         chatId: 2,
         role: 1,
-        courseId: 11,
+        courseId: 5,
       },
     });
     console.log("response", response);

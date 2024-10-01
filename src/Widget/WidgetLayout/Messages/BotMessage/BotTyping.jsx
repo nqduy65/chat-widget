@@ -14,22 +14,47 @@ export const BotTyping = () => {
 
   useEffect(() => {
     let animationFrameId;
+    //console.log({botTyping, nextChunk});
 
-    if (botTyping && nextChunk) {
-      console.log('nextChunk',nextChunk)
-      let charIndex = 0;
-      const renderNextChunk = () => {
-        if (charIndex < nextChunk.length) {
-          setDisplayedStream((prevStream) => prevStream + nextChunk[charIndex]);
-          charIndex++;
-          animationFrameId = requestAnimationFrame(renderNextChunk); // Smooth animation rendering
-        }
-      };
-      renderNextChunk();
-    } else {
-      // Reset displayedStream when bot stops typing
-      setDisplayedStream("");
+    // if (botTyping && nextChunk) {
+    //   console.log("nextChunk", nextChunk);
+    //   let charIndex = 0;
+    //   const renderNextChunk = () => {
+    //     if (charIndex < nextChunk.length) {
+    //       setDisplayedStream(
+    //         (prevStream) => prevStream + nextChunk[charIndex] ?? ""
+    //       );
+    //       charIndex++;
+    //       animationFrameId = requestAnimationFrame(renderNextChunk); // Smooth animation rendering
+    //     }
+    //   };
+    //   renderNextChunk();
+    // } else {
+    //   // Reset displayedStream when bot stops typing
+    //   setDisplayedStream("");
+    // }
+    console.log("nextChunk", nextChunk);
+    let charIndex = 0;
+    let timeoutId = 0;
+    function sleep(ms) {
+      return new Promise((res) => setTimeout(res, ms));
     }
+    const renderNextChunk = async () => {
+      if (charIndex < nextChunk.length) {
+        const nextChar = nextChunk[charIndex];
+
+        // Only append to displayedStream if nextChar is defined and not null
+        if (nextChar !== undefined && nextChar !== null) {
+          setDisplayedStream((prevStream) => prevStream + nextChar);
+        }
+
+        charIndex++;
+        animationFrameId = requestAnimationFrame(renderNextChunk); // Smooth animation rendering
+      }
+      await sleep(500);
+    };
+    //sleep 1 second
+    renderNextChunk();
 
     // Cleanup on unmount or when botTyping changes
     return () => {

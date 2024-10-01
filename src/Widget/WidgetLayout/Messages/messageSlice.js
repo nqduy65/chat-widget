@@ -9,7 +9,7 @@ export const fetchBotResponse = createAsyncThunk(
       content: payload.message,
       chatId: 2,
       role: 1,
-      courseId: 11,
+      courseId: 5,
     };
     const response = await fetch(payload.rasaServerUrl, {
       headers: {
@@ -24,14 +24,17 @@ export const fetchBotResponse = createAsyncThunk(
     let isBotTyping = true;
     const decoder = new TextDecoder();
     thunkAPI.dispatch(setBotStream(""));
+
     while (isBotTyping) {
       const { done, value } = await reader.read();
       if (done) {
         isBotTyping = false;
         break;
       }
+      console.log({ value });
 
       const chunk = decoder.decode(value, { stream: true });
+      console.log({ chunk });
 
       // Dispatch each chunk as it arrives
       thunkAPI.dispatch(updateBotStream(chunk));
@@ -57,6 +60,8 @@ const initialState = {
   userTyping: true,
   userTypingPlaceholder: "Type your message here...",
   userGreeted: false,
+  nextChunk: "",
+  botStream: "",
 };
 export const messagesSlice = createSlice({
   name: "messages",
@@ -84,8 +89,8 @@ export const messagesSlice = createSlice({
       state.messages.push(action.payload);
     },
     setBotStream: (state, action) => {
-      state.botStream = action.payload;
-      state.nextChunk = action.payload;
+      state.botStream = "";
+      state.nextChunk = "";
     },
     updateBotStream: (state, action) => {
       console.log("Updating botStream with:", action.payload); // Add this line
