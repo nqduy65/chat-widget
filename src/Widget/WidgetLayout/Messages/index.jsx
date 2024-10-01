@@ -36,6 +36,7 @@ const MessagesDiv = styled.div`
 `;
 export const Messages = () => {
   const dispatch = useDispatch();
+  const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
 
   const { widgetColor, initialPayload, rasaServerUrl, userId } = appContext;
@@ -69,7 +70,7 @@ export const Messages = () => {
       widgetColor={widgetColor}
     >
       <Chats messages={messages} />
-      <BotTyping />
+      {botTyping && <BotTyping />}
       <div ref={bottomRef}></div>
     </MessagesDiv>
   );
