@@ -9,6 +9,7 @@ const AppContext = createContext({
   botTitle: "",
   botSubTitle: "",
   userId: null,
+  courseId: null,
   textColor: "",
   userMsgBackgroundColor: "",
   botMsgBackgroundColor: "",

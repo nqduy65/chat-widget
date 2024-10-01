@@ -34,7 +34,7 @@ export const Button = styled.button`
 export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
   const dispatch = useDispatch();
   const appContext = useContext(AppContext);
-  const { buttonsCss, botAvatar, rasaServerUrl, userId } = appContext;
+  const { buttonsCss, botAvatar, rasaServerUrl, userId, courseId } = appContext;
   return (
     <div className="flex space-x-1 ">
       <div className={`flex w-5 items-start`}>
@@ -74,6 +74,7 @@ export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
                       rasaServerUrl,
                       message: payload,
                       sender: userId,
+                      courseId: courseId,
                     })
                   );
                 }

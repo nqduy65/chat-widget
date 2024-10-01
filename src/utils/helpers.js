@@ -12,6 +12,7 @@ export const createUserMessage = (message) => {
 export const getBotResponse = async ({
   rasaServerUrl,
   sender,
+  courseId,
   message,
   metadata = {},
 }) => {
@@ -25,9 +26,9 @@ export const getBotResponse = async ({
       url: rasaServerUrl,
       data: {
         content: message,
-        chatId: 2,
+        chatId: sender,
         role: 1,
-        courseId: 5,
+        courseId: courseId,
       },
     });
     console.log("response", response);

@@ -39,7 +39,7 @@ export const Messages = () => {
   const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
 
-  const { widgetColor, initialPayload, rasaServerUrl, userId } = appContext;
+  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } = appContext;
   const { messages, userGreeted } = useSelector((state) => state.messageState);
   const bottomRef = useScrollBottom(messages);
   useEffect(() => {
@@ -53,6 +53,7 @@ export const Messages = () => {
           rasaServerUrl,
           message: initialPayload,
           sender: userId,
+          courseId: courseId,
         })
       );
     }
@@ -63,6 +64,7 @@ export const Messages = () => {
     rasaServerUrl,
     userGreeted,
     userId,
+    courseId,
   ]);
   return (
     <MessagesDiv

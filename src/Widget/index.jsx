@@ -19,6 +19,7 @@ Widget.prototype = {
   rasaServerUrl: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   initialPayload: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   userId: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  courseId: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   metadata: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
   botAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   widgetColor: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -50,6 +51,7 @@ Widget.defaultProps = {
   // rasaServerUrl: "http://localhost:5005/webhooks/rest/webhook",
   rasaServerUrl: "http://localhost:5001/api/v1/chat",
   userId: "jitesh97",
+  courseId: "11",
   initialPayload: "/greet",
   metadata: {},
   botAvatar:

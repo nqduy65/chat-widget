@@ -40,6 +40,7 @@ export const Header = () => {
     chatHeaderCss,
     rasaServerUrl,
     userId,
+    courseId,
     metadata,
   } = appContext;
   
@@ -90,6 +91,7 @@ export const Header = () => {
         rasaServerUrl,
         message: "/restart",
         sender: userId,
+        courseId: courseId,
         metadata,
       })
     );
