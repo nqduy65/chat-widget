@@ -38,10 +38,12 @@ export const Messages = () => {
   const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
+  let role = useSelector((state) => state.widgetState.role);
 
-  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } = appContext;
+  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
+    appContext;
   const { messages, userGreeted } = useSelector((state) => state.messageState);
-  const bottomRef = useScrollBottom(messages);
+  const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
   useEffect(() => {
     if (!userGreeted && messages.length < 1) {
       dispatch(setUserGreeted(true));
@@ -52,6 +54,7 @@ export const Messages = () => {
         fetchBotResponse({
           rasaServerUrl,
           message: initialPayload,
+          // role: role,
           sender: userId,
           courseId: courseId,
         })
@@ -64,16 +67,24 @@ export const Messages = () => {
     rasaServerUrl,
     userGreeted,
     userId,
+    role,
     courseId,
   ]);
   return (
-    <MessagesDiv
-      className="absolute top-[17%] flex h-[72%] w-full flex-col space-y-1 self-start overflow-y-auto rounded-t-[1.2rem] bg-white p-2 pt-2"
-      widgetColor={widgetColor}
-    >
-      <Chats messages={messages} />
-      {botTyping && <BotTyping />}
-      <div ref={bottomRef}></div>
-    </MessagesDiv>
+    <>
+      <MessagesDiv
+        className="absolute top-[17%] flex h-[72%] w-full flex-col space-y-1 self-start overflow-y-auto rounded-t-[1.2rem] bg-white p-2 pt-2"
+        widgetColor={widgetColor}
+        onScroll={handleScroll}
+      >
+        <Chats messages={messages} />
+        {botTyping && (
+          <div className="flex flex-col space-y-2">
+            <BotTyping />
+          </div>
+        )}
+        <div ref={bottomRef}></div>
+      </MessagesDiv>
+    </>
   );
 };

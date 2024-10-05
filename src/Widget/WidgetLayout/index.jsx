@@ -15,7 +15,6 @@ export const WidgetLayout = (props) => {
     (state) => state.widgetState
   );
   let { userId, embedded } = props;
-  console.log(embedded);
   let userIdRef = useRef(_userId);
   const [showNotification, setShowNotification] = useState(true);
 
