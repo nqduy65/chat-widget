@@ -31,7 +31,6 @@ export const getBotResponse = async ({
         courseId: courseId,
       },
     });
-    console.log("response", response);
     return response.data.message;
   } catch (error) {
     console.log("error occurred fetching bot response", error);

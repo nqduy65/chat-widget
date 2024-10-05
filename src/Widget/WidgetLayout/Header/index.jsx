@@ -3,8 +3,8 @@ import { useContext, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
-import { useDispatch } from "react-redux";
-import { setToggleWidget } from "../../widgetSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { roleMap, setRemindTime, setRole, setToggleWidget } from "../../widgetSlice";
 import {
   removeAllMessages,
   resetBot,
@@ -27,11 +27,12 @@ const dropdownMenu = [
   },
 ];
 
-const roles = ["Professor", "Assistant", "Friend"];
+
 const models = ["Chat GPT 3.5", "Chat GPT 4"];
 
 export const Header = () => {
   const dispatch = useDispatch();
+  let { role, remindTime } = useSelector((state) => state.widgetState);
   const appContext = useContext(AppContext);
   const {
     botSubTitle,
@@ -43,19 +44,18 @@ export const Header = () => {
     courseId,
     metadata,
   } = appContext;
-  
+
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("Professor");
   const [remind, setRemind] = useState(false);
-  const [remindTime, setRemindTime] = useState("");
   const [selectedModel, setSelectedModel] = useState("Chat GPT 3.5");
   const dropdownRef = useDetectClickOutside({
     setShowModal: setShowDropdown,
   });
 
   const handleRoleChange = (event) => {
-    setSelectedRole(event.target.value);
+    const roleKey = event.target.value;
+    dispatch(setRole(roleKey)); // Store the key (1, 2, 3) in context
   };
 
   const handleRemindToggle = () => {
@@ -63,7 +63,7 @@ export const Header = () => {
   };
 
   const handleRemindTimeChange = (event) => {
-    setRemindTime(event.target.value);
+    dispatch(setRemindTime(event.target.value)); // Update the context
   };
 
   const handleModelChange = (event) => {
@@ -139,24 +139,28 @@ export const Header = () => {
             }}
           >
             <li className="p-2">
-              <label htmlFor="role" className="mr-2">Role:</label>
+              <label htmlFor="role" className="mr-2">
+                Role:
+              </label>
               <select
                 id="role"
-                value={selectedRole}
+                value={role}
                 onChange={handleRoleChange}
                 className="rounded-lg border p-1"
                 style={{ color: textColor, borderColor: textColor }}
               >
-                {roles.map((role, idx) => (
-                  <option key={idx} value={role}>
-                    {role}
+                {Object.entries(roleMap).map((key, role) => (
+                  <option key={key} value={key[1]}>
+                    {key[0]}
                   </option>
                 ))}
               </select>
             </li>
             <li className="p-2">
               <div className="flex items-center">
-                <label htmlFor="remind" className="mr-2">Remind:</label>
+                <label htmlFor="remind" className="mr-2">
+                  Remind:
+                </label>
                 <input
                   type="checkbox"
                   id="remind"
@@ -175,7 +179,9 @@ export const Header = () => {
               </div>
             </li>
             <li className="p-2">
-              <label htmlFor="model" className="mr-2">Model:</label>
+              <label htmlFor="model" className="mr-2">
+                Model:
+              </label>
               <select
                 id="model"
                 value={selectedModel}
