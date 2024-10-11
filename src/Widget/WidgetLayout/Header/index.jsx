@@ -4,7 +4,13 @@ import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import { roleMap, setRemindTime, setRole, setToggleWidget } from "../../widgetSlice";
+import {
+  roleMap,
+  setRemindTime,
+  setRole,
+  setToggleWidget,
+  setToken,
+} from "../../widgetSlice";
 import {
   removeAllMessages,
   resetBot,
@@ -27,12 +33,11 @@ const dropdownMenu = [
   },
 ];
 
-
 const models = ["Chat GPT 3.5", "Chat GPT 4"];
 
 export const Header = () => {
   const dispatch = useDispatch();
-  let { role, remindTime } = useSelector((state) => state.widgetState);
+  let { role, remindTime, token } = useSelector((state) => state.widgetState);
   const appContext = useContext(AppContext);
   const {
     botSubTitle,
@@ -56,6 +61,11 @@ export const Header = () => {
   const handleRoleChange = (event) => {
     const roleKey = event.target.value;
     dispatch(setRole(roleKey)); // Store the key (1, 2, 3) in context
+  };
+
+  const handleTokenChange = (event) => {
+    const roleKey = event.target.value;
+    dispatch(setToken(roleKey)); // Store the key (1, 2, 3) in context
   };
 
   const handleRemindToggle = () => {
@@ -155,6 +165,19 @@ export const Header = () => {
                   </option>
                 ))}
               </select>
+            </li>
+            <li className="p-2">
+              <label htmlFor="token" className="mr-2">
+                Token:
+              </label>
+              <input
+                id="token"
+                type="text"
+                value={token}
+                onChange={handleTokenChange}
+                className="rounded-lg border p-1"
+                style={{ color: textColor, borderColor: textColor }}
+              />
             </li>
             <li className="p-2">
               <div className="flex items-center">

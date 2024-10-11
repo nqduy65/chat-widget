@@ -7,6 +7,7 @@ import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
 import {
   fetchBotResponse,
+  fetchChatHistory,
   setUserGreeted,
   setUserTypingPlaceholder,
   toggleBotTyping,
@@ -44,6 +45,15 @@ export const Messages = () => {
     appContext;
   const { messages, userGreeted } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
+  dispatch(
+    fetchChatHistory({
+      rasaServerUrl,
+      message: initialPayload,
+      // role: role,
+      sender: userId,
+      courseId: courseId,
+    })
+  );
   useEffect(() => {
     if (!userGreeted && messages.length < 1) {
       dispatch(setUserGreeted(true));

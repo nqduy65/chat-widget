@@ -1,15 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const roleMap = {
-  "Professor": 1,
-  "Assistant": 2,
-  "Friend": 3,
+  Professor: 1,
+  Assistant: 2,
+  Friend: 3,
 };
 const initialState = {
   toggleWidget: false,
   userId: null,
   remindTime: "",
   role: roleMap["Professor"],
+  token: "",
 };
 
 export const widgetSlice = createSlice({
@@ -28,10 +29,13 @@ export const widgetSlice = createSlice({
     setRole: (state, action) => {
       state.role = action.payload;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
   },
 });
 
-export const { setToggleWidget, setUserId, setRemindTime, setRole } =
+export const { setToggleWidget, setUserId, setRemindTime, setRole, setToken } =
   widgetSlice.actions;
 
 export default widgetSlice.reducer;

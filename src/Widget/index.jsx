@@ -49,7 +49,7 @@ Widget.prototype = {
 
 Widget.defaultProps = {
   // rasaServerUrl: "http://localhost:5005/webhooks/rest/webhook",
-  rasaServerUrl: "http://localhost:5001/api/v1/chat",
+  rasaServerUrl: "http://localhost:5000/api/v2/chat",
   userId: "jitesh97",
   courseId: "11",
   initialPayload: "/greet",
