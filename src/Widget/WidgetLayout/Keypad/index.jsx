@@ -23,6 +23,7 @@ export const Keypad = () => {
   const dispatch = useDispatch();
   const theme = useContext(AppContext);
   const [userInput, setUserInput] = useState("");
+  let role = useSelector((state) => state.widgetState.role);
   const userTypingPlaceholder = useSelector(
     (state) => state.messageState.userTypingPlaceholder
   );
@@ -42,6 +43,7 @@ export const Keypad = () => {
           message: userInput.trim(),
           sender: userId,
           courseId: courseId,
+          // role: role,
         })
       );
     }
