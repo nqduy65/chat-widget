@@ -59,21 +59,15 @@ export const fetchChatHistory = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       thunkAPI.dispatch(setBotStream());
-      const testData = {
-        content: payload.message,
-        chatId: 2,
-        role: 1,
-        courseId: 4,
-      };
 
       // Make the API request
       const response = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer " + payload.token
         },
-        method: "POST",
-        body: JSON.stringify(testData),
+        method: "GET",
       });
 
       // Parse the response into JSON
@@ -100,7 +94,7 @@ export const fetchChatHistory = createAsyncThunk(
           type: "text",
           ts: new Date(parsedContent.user.time),
         };
-
+      console.log("HISTORY: ", userMessage);
         // Add both messages to the history array
         history.push(userMessage);
         history.push(botMessage);

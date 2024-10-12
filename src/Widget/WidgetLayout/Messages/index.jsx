@@ -39,8 +39,7 @@ export const Messages = () => {
   const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
-  let role = useSelector((state) => state.widgetState.role);
-
+  let { role, token } = useSelector((state) => state.widgetState);
   const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
     appContext;
   const { messages, userGreeted } = useSelector((state) => state.messageState);
@@ -48,11 +47,8 @@ export const Messages = () => {
   useEffect(() => {
     dispatch(
       fetchChatHistory({
-        rasaServerUrl,
-        message: initialPayload,
-        // role: role,
-        sender: userId,
-        courseId: courseId,
+        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        token: token
       })
     );
   }, []);
