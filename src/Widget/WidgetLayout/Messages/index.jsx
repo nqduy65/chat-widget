@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { useScrollBottom } from "../../../hooks/useScrollBottom";
-import AppContext from "../../AppContext";
+//import AppContext from "../../AppContext";
 import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
 import {
@@ -38,10 +38,11 @@ const MessagesDiv = styled.div`
 export const Messages = () => {
   const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
-  const appContext = useContext(AppContext);
+  // const appContext = useContext(AppContext);
+  // const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
+  //   appContext;
+    const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } = useSelector((state) => state.appState);
   let { role, token } = useSelector((state) => state.widgetState);
-  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
-    appContext;
   const { messages, userGreeted } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
   useEffect(() => {

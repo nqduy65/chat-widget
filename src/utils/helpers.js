@@ -26,7 +26,7 @@ export const getBotResponse = async ({
       url: rasaServerUrl,
       data: {
         content: message,
-        chatId: sender,
+        chatId: 2,
         role: 1,
         courseId: courseId,
       },

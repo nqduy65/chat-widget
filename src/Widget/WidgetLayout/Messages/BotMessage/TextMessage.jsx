@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import AppContext from "../../../AppContext";
+//import AppContext from "../../../AppContext";
 import { formattedTs, MardownText } from "../utils";
+import {useSelector} from "react-redux";
 
 export const TextMessage = ({
   text,
@@ -9,7 +10,8 @@ export const TextMessage = ({
   showBotAvatar,
   ts,
 }) => {
-  const theme = useContext(AppContext);
+  //const theme = useContext(AppContext);
+  const theme = useSelector((state)=>state.appState);
   const { botAvatar, botMsgColor, botMsgBackgroundColor } = theme;
   const position = [
     "message",

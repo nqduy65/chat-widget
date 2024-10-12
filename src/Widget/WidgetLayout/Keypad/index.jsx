@@ -21,7 +21,8 @@ const Textarea = styled.textarea`
 
 export const Keypad = () => {
   const dispatch = useDispatch();
-  const theme = useContext(AppContext);
+  //const theme = useContext(AppContext);
+
   const [userInput, setUserInput] = useState("");
   let { role, token } = useSelector((state) => state.widgetState);
   const userTypingPlaceholder = useSelector(
@@ -29,7 +30,7 @@ export const Keypad = () => {
   );
 
   const userTyping = useSelector((state) => state.messageState.userTyping);
-  const { rasaServerUrl, userId, courseId, textColor } = theme;
+  const { rasaServerUrl, userId, courseId, textColor } = useSelector((state) => state.appState);
 
   const handleSubmit = async () => {
     if (userInput.length > 0) {

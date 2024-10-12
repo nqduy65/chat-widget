@@ -1,6 +1,6 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
-import AppContext from "../../AppContext";
+//import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,7 +38,8 @@ const models = ["Chat GPT 3.5", "Chat GPT 4"];
 export const Header = () => {
   const dispatch = useDispatch();
   let { role, remindTime, token } = useSelector((state) => state.widgetState);
-  const appContext = useContext(AppContext);
+  //const appContext = useContext(AppContext);
+
   const {
     botSubTitle,
     botTitle,
@@ -48,7 +49,7 @@ export const Header = () => {
     userId,
     courseId,
     metadata,
-  } = appContext;
+  } = useSelector((state) => state.appState);
 
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
@@ -103,7 +104,13 @@ export const Header = () => {
       })
     );
   };
+  const getRoleName = (roleValue) => {
 
+    const entry= Object.fromEntries(
+        Object.entries(roleMap).map(([key, value]) => [value, key])
+    );
+    return entry[Number(roleValue)] ?? "Unknown"; // Return role name or 'Unknown' if not found
+  };
   return (
     <>
       <div
@@ -118,7 +125,7 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">{`${role} ${botSubTitle}`}</p>
+          <p className="">{`${getRoleName(role)} ${botSubTitle}`}</p>
         </div>
         <motion.div
           whileHover={{ scale: 1.2 }}
