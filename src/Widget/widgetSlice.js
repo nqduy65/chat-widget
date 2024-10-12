@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const roleMap = {
+  Default: 0,
   Professor: 1,
   Assistant: 2,
   Friend: 3,
@@ -9,7 +10,7 @@ const initialState = {
   toggleWidget: false,
   userId: null,
   remindTime: "",
-  role: roleMap["Professor"],
+  role: roleMap["Default"],
   token: "",
 };
 
