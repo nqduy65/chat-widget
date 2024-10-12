@@ -33,7 +33,7 @@ export const Button = styled.button`
 
 export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
   const dispatch = useDispatch();
-  let role = useSelector((state) => state.widgetState.role);
+  let { role, token } = useSelector((state) => state.widgetState);
   const appContext = useContext(AppContext);
   const { buttonsCss, botAvatar, rasaServerUrl, userId, courseId } = appContext;
   return (
@@ -74,9 +74,10 @@ export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
                     fetchBotResponse({
                       rasaServerUrl,
                       message: payload,
-                      // role: role,
+                      role: role,
                       sender: userId,
                       courseId: courseId,
+                      token: token,
                     })
                   );
                 }

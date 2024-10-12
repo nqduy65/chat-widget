@@ -23,7 +23,7 @@ export const Keypad = () => {
   const dispatch = useDispatch();
   const theme = useContext(AppContext);
   const [userInput, setUserInput] = useState("");
-  let role = useSelector((state) => state.widgetState.role);
+  let { role, token } = useSelector((state) => state.widgetState);
   const userTypingPlaceholder = useSelector(
     (state) => state.messageState.userTypingPlaceholder
   );
@@ -41,9 +41,10 @@ export const Keypad = () => {
         fetchBotResponse({
           rasaServerUrl,
           message: userInput.trim(),
+          role: role,
           sender: userId,
           courseId: courseId,
-          // role: role,
+          token: token,
         })
       );
     }

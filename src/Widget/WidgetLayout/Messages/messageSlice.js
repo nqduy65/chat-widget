@@ -4,20 +4,20 @@ import { getBotResponse } from "../../../utils/helpers";
 export const fetchBotResponse = createAsyncThunk(
   "messages/fetchBotResponse",
   async (payload, thunkAPI) => {
-    //const response = await getBotResponse(payload);
-    const testData = {
+    const body = {
       content: payload.message,
-      chatId: 2,
-      role: 1,
-      courseId: 4,
+      chatId: payload.sender,
+      role: payload.role,
+      courseId: payload.courseId,
     };
     const response = await fetch(payload.rasaServerUrl, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
+        Authorization: "Bearer " + payload.token,
       },
       method: "POST",
-      body: JSON.stringify(testData),
+      body: JSON.stringify(body),
     });
 
     const reader = response.body.getReader();
@@ -50,7 +50,20 @@ export const fetchBotResponse = createAsyncThunk(
 export const resetBot = createAsyncThunk(
   "messages/resetBot",
   async (payload, thunkAPI) => {
-    await getBotResponse(payload);
+    try {
+      // Make the API request
+      await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.error("Failed to fetch chat history:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
   }
 );
 
@@ -65,7 +78,7 @@ export const fetchChatHistory = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
-          "Authorization": "Bearer " + payload.token
+          Authorization: "Bearer " + payload.token,
         },
         method: "GET",
       });
@@ -94,7 +107,7 @@ export const fetchChatHistory = createAsyncThunk(
           type: "text",
           ts: new Date(parsedContent.user.time),
         };
-      console.log("HISTORY: ", userMessage);
+        console.log("HISTORY: ", userMessage);
         // Add both messages to the history array
         history.push(userMessage);
         history.push(botMessage);

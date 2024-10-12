@@ -98,11 +98,8 @@ export const Header = () => {
     setShowDropdown(!showDropdown);
     dispatch(
       resetBot({
-        rasaServerUrl,
-        message: "/restart",
-        sender: userId,
-        courseId: courseId,
-        metadata,
+        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        token: token,
       })
     );
   };
@@ -121,7 +118,7 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">{botSubTitle}</p>
+          <p className="">{`${role} ${botSubTitle}`}</p>
         </div>
         <motion.div
           whileHover={{ scale: 1.2 }}

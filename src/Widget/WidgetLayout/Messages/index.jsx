@@ -48,7 +48,7 @@ export const Messages = () => {
     dispatch(
       fetchChatHistory({
         rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
-        token: token
+        token: token,
       })
     );
   }, []);
@@ -63,9 +63,10 @@ export const Messages = () => {
         fetchBotResponse({
           rasaServerUrl,
           message: initialPayload,
-          // role: role,
+          role: role,
           sender: userId,
           courseId: courseId,
+          token: token,
         })
       );
     }
@@ -77,6 +78,7 @@ export const Messages = () => {
     userGreeted,
     userId,
     role,
+    token,
     courseId,
   ]);
   return (
