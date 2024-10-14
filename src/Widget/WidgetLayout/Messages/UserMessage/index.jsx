@@ -1,12 +1,14 @@
 import { useContext } from "react";
 
-import AppContext from "../../../AppContext";
+//import AppContext from "../../../AppContext";
 
 import { formattedTs, MardownText } from "../utils";
+import {useSelector} from "react-redux";
 
 export const UserTextmessage = ({ messageItem }) => {
   const { text, ts } = messageItem;
-  const appContext = useContext(AppContext);
+  //const appContext = useContext(AppContext);
+  const appContext = useSelector((state) => state.appState)
   const { textColor, userMsgBackgroundColor } = appContext;
 
   return (

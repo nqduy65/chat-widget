@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { createUserMessage } from "../../../../utils/helpers";
-import AppContext from "../../../AppContext";
+//import AppContext from "../../../AppContext";
 import {
   addMessage,
   disableButtons,
@@ -33,8 +33,9 @@ export const Button = styled.button`
 
 export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
   const dispatch = useDispatch();
-  let role = useSelector((state) => state.widgetState.role);
-  const appContext = useContext(AppContext);
+  let { role, token } = useSelector((state) => state.widgetState);
+  //const appContext = useContext(AppContext);
+  const appContext = useSelector((state)=> state.appState);
   const { buttonsCss, botAvatar, rasaServerUrl, userId, courseId } = appContext;
   return (
     <div className="flex space-x-1 ">
@@ -74,9 +75,10 @@ export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
                     fetchBotResponse({
                       rasaServerUrl,
                       message: payload,
-                      // role: role,
+                      role: role,
                       sender: userId,
                       courseId: courseId,
+                      token: token,
                     })
                   );
                 }

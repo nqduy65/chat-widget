@@ -1,10 +1,16 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
-import AppContext from "../../AppContext";
+//import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import { roleMap, setRemindTime, setRole, setToggleWidget } from "../../widgetSlice";
+import {
+  roleMap,
+  setRemindTime,
+  setRole,
+  setToggleWidget,
+  setToken,
+} from "../../widgetSlice";
 import {
   removeAllMessages,
   resetBot,
@@ -27,13 +33,13 @@ const dropdownMenu = [
   },
 ];
 
-
 const models = ["Chat GPT 3.5", "Chat GPT 4"];
 
 export const Header = () => {
   const dispatch = useDispatch();
-  let { role, remindTime } = useSelector((state) => state.widgetState);
-  const appContext = useContext(AppContext);
+  let { role, remindTime, token } = useSelector((state) => state.widgetState);
+  //const appContext = useContext(AppContext);
+
   const {
     botSubTitle,
     botTitle,
@@ -43,7 +49,7 @@ export const Header = () => {
     userId,
     courseId,
     metadata,
-  } = appContext;
+  } = useSelector((state) => state.appState);
 
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
@@ -56,6 +62,11 @@ export const Header = () => {
   const handleRoleChange = (event) => {
     const roleKey = event.target.value;
     dispatch(setRole(roleKey)); // Store the key (1, 2, 3) in context
+  };
+
+  const handleTokenChange = (event) => {
+    const roleKey = event.target.value;
+    dispatch(setToken(roleKey)); // Store the key (1, 2, 3) in context
   };
 
   const handleRemindToggle = () => {
@@ -88,15 +99,18 @@ export const Header = () => {
     setShowDropdown(!showDropdown);
     dispatch(
       resetBot({
-        rasaServerUrl,
-        message: "/restart",
-        sender: userId,
-        courseId: courseId,
-        metadata,
+        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        token: token,
       })
     );
   };
+  const getRoleName = (roleValue) => {
 
+    const entry= Object.fromEntries(
+        Object.entries(roleMap).map(([key, value]) => [value, key])
+    );
+    return entry[Number(roleValue)] ?? "Unknown"; // Return role name or 'Unknown' if not found
+  };
   return (
     <>
       <div
@@ -111,7 +125,7 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">{botSubTitle}</p>
+          <p className="">{`${getRoleName(role)} ${botSubTitle}`}</p>
         </div>
         <motion.div
           whileHover={{ scale: 1.2 }}
@@ -155,6 +169,19 @@ export const Header = () => {
                   </option>
                 ))}
               </select>
+            </li>
+            <li className="p-2">
+              <label htmlFor="token" className="mr-2">
+                Token:
+              </label>
+              <input
+                id="token"
+                type="text"
+                value={token}
+                onChange={handleTokenChange}
+                className="rounded-lg border p-1"
+                style={{ color: textColor, borderColor: textColor }}
+              />
             </li>
             <li className="p-2">
               <div className="flex items-center">

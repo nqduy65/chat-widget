@@ -2,11 +2,12 @@ import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { useScrollBottom } from "../../../hooks/useScrollBottom";
-import AppContext from "../../AppContext";
+//import AppContext from "../../AppContext";
 import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
 import {
   fetchBotResponse,
+  fetchChatHistory,
   setUserGreeted,
   setUserTypingPlaceholder,
   toggleBotTyping,
@@ -37,13 +38,22 @@ const MessagesDiv = styled.div`
 export const Messages = () => {
   const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
-  const appContext = useContext(AppContext);
-  let role = useSelector((state) => state.widgetState.role);
-
-  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
-    appContext;
+  // const appContext = useContext(AppContext);
+  // const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
+  //   appContext;
+    const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } = useSelector((state) => state.appState);
+  let { role, token } = useSelector((state) => state.widgetState);
   const { messages, userGreeted } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
+  useEffect(() => {
+    dispatch(
+      fetchChatHistory({
+        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        token: token,
+      })
+    );
+  }, []);
+
   useEffect(() => {
     if (!userGreeted && messages.length < 1) {
       dispatch(setUserGreeted(true));
@@ -54,9 +64,10 @@ export const Messages = () => {
         fetchBotResponse({
           rasaServerUrl,
           message: initialPayload,
-          // role: role,
+          role: role,
           sender: userId,
           courseId: courseId,
+          token: token,
         })
       );
     }
@@ -68,6 +79,7 @@ export const Messages = () => {
     userGreeted,
     userId,
     role,
+    token,
     courseId,
   ]);
   return (

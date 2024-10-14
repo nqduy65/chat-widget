@@ -1,10 +1,12 @@
 import { useContext } from "react";
-import AppContext from "../../../AppContext";
+//import AppContext from "../../../AppContext";
 import { formattedTs } from "../utils";
+import {useSelector} from "react-redux";
 
 export const Image = ({ showBotAvatar, imageUrl, ts }) => {
-  const appContext = useContext(AppContext);
-  const { botAvatar } = appContext;
+  //const appContext = useContext(AppContext);
+
+  const { botAvatar } = useSelector((state) => state.appState);
   return (
     <div className="flex space-x-1">
       <div className={`flex w-5 items-end`}>

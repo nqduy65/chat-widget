@@ -4,26 +4,26 @@ import { getBotResponse } from "../../../utils/helpers";
 export const fetchBotResponse = createAsyncThunk(
   "messages/fetchBotResponse",
   async (payload, thunkAPI) => {
-    //const response = await getBotResponse(payload);
-    const testData = {
+    const body = {
       content: payload.message,
-      chatId: 2,
-      role: 1,
-      courseId: 5,
+      chatId: payload.sender,
+      role: payload.role,
+      courseId: payload.courseId,
     };
     const response = await fetch(payload.rasaServerUrl, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
+        Authorization: "Bearer " + payload.token,
       },
       method: "POST",
-      body: JSON.stringify(testData),
+      body: JSON.stringify(body),
     });
 
     const reader = response.body.getReader();
     let isBotTyping = true;
     const decoder = new TextDecoder();
-    thunkAPI.dispatch(setBotStream(""));
+    thunkAPI.dispatch(setBotStream());
 
     while (isBotTyping) {
       const { done, value } = await reader.read();
@@ -31,13 +31,13 @@ export const fetchBotResponse = createAsyncThunk(
         isBotTyping = false;
         break;
       }
-      console.log({ value });
 
       const chunk = decoder.decode(value, { stream: true });
-      console.log({ chunk });
-
       // Dispatch each chunk as it arrives
       thunkAPI.dispatch(updateBotStream(chunk));
+      if (chunk.includes("&start&")) {
+        thunkAPI.dispatch(setBotStream());
+      }
     }
 
     thunkAPI.dispatch(toggleBotTyping(false));
@@ -50,7 +50,73 @@ export const fetchBotResponse = createAsyncThunk(
 export const resetBot = createAsyncThunk(
   "messages/resetBot",
   async (payload, thunkAPI) => {
-    await getBotResponse(payload);
+    try {
+      // Make the API request
+      await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.error("Failed to fetch chat history:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const fetchChatHistory = createAsyncThunk(
+  "messages/fetchChatHistory",
+  async (payload, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setBotStream());
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "GET",
+      });
+
+      // Parse the response into JSON
+      const chatHistory = await response.json();
+
+      let history = [];
+
+      // Iterate over each entry in the chat history
+      chatHistory.forEach((entry) => {
+        const parsedContent = JSON.parse(entry.content);
+
+        // Parse bot message
+        const botMessage = {
+          text: parsedContent.bot.message,
+          sender: "BOT",
+          type: "text",
+          ts: new Date(parsedContent.bot.time),
+        };
+
+        // Parse user message
+        const userMessage = {
+          text: parsedContent.user.message,
+          sender: "USER",
+          type: "text",
+          ts: new Date(parsedContent.user.time),
+        };
+        console.log("HISTORY: ", userMessage);
+        // Add both messages to the history array
+        history.push(userMessage);
+        history.push(botMessage);
+      });
+      thunkAPI.dispatch(setMessage(history));
+    } catch (error) {
+      console.error("Failed to fetch chat history:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
   }
 );
 
@@ -67,6 +133,9 @@ export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
+    setMessage: (state, action) => {
+      state.messages = action.payload;
+    },
     addMessage: (state, action) => {
       if (action.payload.sender === "USER") {
         state.messages = state.messages.map((message) => {
@@ -88,15 +157,13 @@ export const messagesSlice = createSlice({
       }
       state.messages.push(action.payload);
     },
-    setBotStream: (state, action) => {
+    setBotStream: (state) => {
       state.botStream = "";
       state.nextChunk = "";
     },
     updateBotStream: (state, action) => {
-      console.log("Updating botStream with:", action.payload); // Add this line
       state.botStream += action.payload; // Append new chunk to botStream
       state.nextChunk = action.payload;
-      console.log("Updated botStream:", state.botStream); // Add this line
     },
     finalizeBotMessage: (state) => {
       // Add final botStream data as a message
@@ -153,6 +220,7 @@ export const messagesSlice = createSlice({
 });
 
 export const {
+  setMessage,
   addMessage,
   setBotStream,
   updateBotStream,
