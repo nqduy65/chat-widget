@@ -33,6 +33,8 @@ const dropdownMenu = [
   },
 ];
 
+export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
+
 const models = ["Chat GPT 3.5", "Chat GPT 4"];
 
 export const Header = () => {
@@ -102,12 +104,6 @@ export const Header = () => {
       })
     );
   };
-  const getRoleName = (roleValue) => {
-    const entry = Object.fromEntries(
-      Object.entries(roleMap).map(([key, value]) => [value, key])
-    );
-    return entry[Number(roleValue)] ?? "Unknown"; // Return role name or 'Unknown' if not found
-  };
   return (
     <>
       <div
@@ -122,7 +118,7 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">{`${getRoleName(role)} ${botSubTitle}`}</p>
+          <p className="">{`${mapRole[role]} ${botSubTitle}`}</p>
         </div>
         <motion.div
           whileHover={{ scale: 1.2 }}

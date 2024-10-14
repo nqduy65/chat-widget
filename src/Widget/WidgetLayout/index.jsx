@@ -1,35 +1,72 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setNotify, setToggleWidget, setUserId } from "../widgetSlice";
 import AppContext from "../AppContext";
-import { setToggleWidget, setUserId } from "../widgetSlice";
 import { Header } from "./Header";
 import { Keypad } from "./Keypad";
 import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
+import { fetchChatHistory } from "./Messages/messageSlice";
+import Pusher from "pusher-js";
 
 export const WidgetLayout = (props) => {
   const dispatch = useDispatch();
-  let { toggleWidget, userId: _userId } = useSelector(
-    (state) => state.widgetState
-  );
+  let {
+    toggleWidget,
+    userId: _userId,
+    notify,
+    token,
+  } = useSelector((state) => state.widgetState);
+
+  const { rasaServerUrl } = useSelector((state) => state.appState);
 
   let { userId, embedded, courseId } = props;
   console.log("userId", userId);
   console.log("courseId", courseId);
   let userIdRef = useRef(_userId);
-  const [showNotification, setShowNotification] = useState(true);
+
+  const handleNewData = (data) => {
+    dispatch(
+      fetchChatHistory({
+        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        token: token,
+      })
+    );
+    console.log("data remind", data);
+    if (!toggleWidget) {
+      dispatch(setNotify(true));
+    }
+  };
+  useEffect(() => {
+    const pusher = new Pusher("9de03240cc8a5c22c658", {
+      cluster: "ap1",
+      logToConsole: true,
+    });
+
+    const channel = pusher.subscribe("moodle-remind");
+
+    channel.bind(userId, handleNewData);
+
+    // Initial fetch of chat history when the component mounts
+
+    return () => {
+      channel.unbind(userId, handleNewData);
+      pusher.unsubscribe("moodle-remind");
+      pusher.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
     const timeoutId = setTimeout(() => {
-      setShowNotification(false);
+      dispatch(setNotify(false));
     }, 3000);
 
     // Clear the timeout if the component is unmounted
     return () => clearTimeout(timeoutId);
-  }, [toggleWidget]);
+  }, [notify]);
 
   useEffect(() => {
     if (userId) {
@@ -41,10 +78,10 @@ export const WidgetLayout = (props) => {
         dispatch(setUserId(userIdRef.current));
       }
     }
-  }, [dispatch, embedded, props.userId, toggleWidget, userId]);
+  }, [userId]);
 
   const handleNotificationClick = () => {
-    setShowNotification(false);
+    dispatch(setNotify(false));
     dispatch(setToggleWidget(true)); // Open the widget
   };
 

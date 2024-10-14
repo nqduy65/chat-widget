@@ -1,9 +1,8 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { createUserMessage } from "../../../utils/helpers";
-import AppContext from "../../AppContext";
 import {
   addMessage,
   fetchBotResponse,

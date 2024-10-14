@@ -13,6 +13,7 @@
     "framer-motion": "^7.6.5",
     "nanoid": "^4.0.0",
     "postcss-preset-env": "^7.8.2",
+    "pusher-js": "^8.4.0-rc2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.3",
