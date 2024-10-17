@@ -8,6 +8,7 @@ export const roleMap = {
 };
 const initialState = {
   toggleWidget: false,
+  notify: false,
   userId: null,
   remindTime: "",
   role: roleMap["Default"],
@@ -20,6 +21,9 @@ export const widgetSlice = createSlice({
   reducers: {
     setToggleWidget: (state, action) => {
       state.toggleWidget = action.payload;
+    },
+    setNotify: (state, action) => {
+      state.notify = action.payload;
     },
     setUserId: (state, action) => {
       state.userId = action.payload;
@@ -36,7 +40,13 @@ export const widgetSlice = createSlice({
   },
 });
 
-export const { setToggleWidget, setUserId, setRemindTime, setRole, setToken } =
-  widgetSlice.actions;
+export const {
+  setToggleWidget,
+  setNotify,
+  setUserId,
+  setRemindTime,
+  setRole,
+  setToken,
+} = widgetSlice.actions;
 
 export default widgetSlice.reducer;

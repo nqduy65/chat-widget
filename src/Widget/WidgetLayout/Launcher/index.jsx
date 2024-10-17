@@ -1,10 +1,10 @@
-import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AppContext from "../../AppContext";
-import { setToggleWidget } from "../../widgetSlice";
+import { setNotify, setToggleWidget } from "../../widgetSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useContext } from "react";
 export const Launcher = () => {
   const dispatch = useDispatch();
   let toggleWidget = useSelector((state) => state.widgetState.toggleWidget);
@@ -21,6 +21,7 @@ export const Launcher = () => {
       style={{ backgroundColor: widgetColor, color: textColor }}
       onClick={(e) => {
         e.preventDefault();
+        if (!toggleWidget) dispatch(setNotify(false));
         dispatch(setToggleWidget(!toggleWidget));
       }}
     >

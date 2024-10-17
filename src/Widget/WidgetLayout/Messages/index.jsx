@@ -13,7 +13,6 @@ import {
   toggleBotTyping,
   toggleUserTyping,
 } from "./messageSlice";
-
 const MessagesDiv = styled.div`
 /* width */
 ::-webkit-scrollbar {
@@ -45,6 +44,7 @@ export const Messages = () => {
   let { role, token } = useSelector((state) => state.widgetState);
   const { messages, userGreeted } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
+
   useEffect(() => {
     dispatch(
       fetchChatHistory({
