@@ -107,8 +107,12 @@ export const fetchChatHistory = createAsyncThunk(
           ts: new Date(parsedContent.user.time),
         };
         // Add both messages to the history array
-        history.push(userMessage);
-        history.push(botMessage);
+        if (parsedContent.user.message !== "") {
+          history.push(userMessage);
+        }
+        if (parsedContent.bot.message !== "") {
+          history.push(botMessage);
+        }
       });
       thunkAPI.dispatch(setMessage(history));
     } catch (error) {
