@@ -1,5 +1,5 @@
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { createUserMessage } from "../../../utils/helpers";
@@ -9,6 +9,7 @@ import {
   toggleBotTyping,
   toggleUserTyping,
 } from "../Messages/messageSlice";
+import AppContext from "../../AppContext";
 
 const Textarea = styled.textarea`
   -ms-overflow-style: none;
@@ -20,7 +21,7 @@ const Textarea = styled.textarea`
 
 export const Keypad = () => {
   const dispatch = useDispatch();
-  //const theme = useContext(AppContext);
+  const appContext = useContext(AppContext);
 
   const [userInput, setUserInput] = useState("");
   let { role, token } = useSelector((state) => state.widgetState);
@@ -29,7 +30,7 @@ export const Keypad = () => {
   );
 
   const userTyping = useSelector((state) => state.messageState.userTyping);
-  const { rasaServerUrl, userId, courseId, textColor } = useSelector((state) => state.appState);
+  const { rasaServerUrl, userId, courseId, textColor } = appContext;
 
   const handleSubmit = async () => {
     if (userInput.length > 0) {

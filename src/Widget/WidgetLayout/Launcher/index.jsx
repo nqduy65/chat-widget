@@ -9,7 +9,6 @@ export const Launcher = () => {
   const dispatch = useDispatch();
   let toggleWidget = useSelector((state) => state.widgetState.toggleWidget);
   const appContext = useContext(AppContext);
-  // const appContext = useSelector((state) => state.appState);
   const { widgetColor, botAvatar, textColor } = appContext;
   return (
     <motion.div
