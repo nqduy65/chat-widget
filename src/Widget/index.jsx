@@ -50,7 +50,7 @@ Widget.prototype = {
 Widget.defaultProps = {
   rasaServerUrl: "http://localhost:5001/api/v2/chat",
   userId: "1",
-  courseId: "-1",
+  courseId: "1",
   initialPayload: "/greet",
   metadata: {},
   botAvatar:

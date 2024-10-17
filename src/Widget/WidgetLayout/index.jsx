@@ -118,36 +118,35 @@ export const WidgetLayout = (props) => {
             <Keypad />
           </motion.div>
         )}
-        <AnimatePresence>
-          {notify && !toggleWidget && (
-            <motion.div
-              initial={{ opacity: 1, scale: 0.9, x: 300 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.5, x: 300 }}
-              transition={{
-                duration: 3,
-                ease: [0.4, 0.0, 0.2, 1], // Smooth cubic-bezier
-              }}
-              className="fixed bottom-10 right-5 flex items-center justify-center rounded-full bg-blue-600 p-6 text-white shadow-lg"
-              style={{
-                backgroundColor: "#bb99ff",
-                color: "#fff",
-                width: "160px",
-                height: "160px",
-              }}
-              onClick={handleNotificationClick}
-            >
-              <div style={{ textAlign: "center" }}>
-                <h5 className="white-text" style={{ margin: 0 }}>
-                  Hey there 👋
-                </h5>
-                <p className="white-text" style={{ margin: 0 }}>
-                  A new message comes!
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {notify && !toggleWidget && (
+          <motion.div
+            key="notification"
+            initial={{ opacity: 1, scale: 0.9, x: 300 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.5, x: 300 }}
+            transition={{
+              duration: 3,
+              ease: [0.4, 0.0, 0.2, 1], // Smooth cubic-bezier
+            }}
+            className="fixed bottom-10 right-5 flex items-center justify-center rounded-full bg-blue-600 p-6 text-white shadow-lg"
+            style={{
+              backgroundColor: "#bb99ff",
+              color: "#fff",
+              width: "160px",
+              height: "160px",
+            }}
+            onClick={handleNotificationClick}
+          >
+            <div style={{ textAlign: "center" }}>
+              <h5 className="white-text" style={{ margin: 0 }}>
+                Hey there 👋
+              </h5>
+              <p className="white-text" style={{ margin: 0 }}>
+                A new message comes!
+              </p>
+            </div>
+          </motion.div>
+        )}
         <Launcher />
       </AnimatePresence>
     </AppContext.Provider>
