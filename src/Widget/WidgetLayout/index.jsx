@@ -58,15 +58,16 @@ export const WidgetLayout = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
-    const timeoutId = setTimeout(() => {
-      dispatch(setNotify(false));
-    }, 3000);
+  /* AUTO TRIGGER TO HIDE NOTIFICATION */
+  // useEffect(() => {
+  //   // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
+  //   const timeoutId = setTimeout(() => {
+  //     dispatch(setNotify(false));
+  //   }, 3000);
 
-    // Clear the timeout if the component is unmounted
-    return () => clearTimeout(timeoutId);
-  }, [notify]);
+  //   // Clear the timeout if the component is unmounted
+  //   return () => clearTimeout(timeoutId);
+  // }, [notify]);
 
   useEffect(() => {
     if (userId) {
