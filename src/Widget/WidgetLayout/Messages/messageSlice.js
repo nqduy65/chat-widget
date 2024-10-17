@@ -106,7 +106,6 @@ export const fetchChatHistory = createAsyncThunk(
           type: "text",
           ts: new Date(parsedContent.user.time),
         };
-        console.log("HISTORY: ", userMessage);
         // Add both messages to the history array
         history.push(userMessage);
         history.push(botMessage);
