@@ -5,7 +5,14 @@ import { useScrollBottom } from "../../../hooks/useScrollBottom";
 import AppContext from "../../AppContext";
 import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
-import { fetchChatHistory } from "./messageSlice";
+import {
+  fetchBotResponse,
+  fetchChatHistory,
+  setUserGreeted,
+  setUserTypingPlaceholder,
+  toggleBotTyping,
+  toggleUserTyping,
+} from "./messageSlice";
 const MessagesDiv = styled.div`
 /* width */
 ::-webkit-scrollbar {
@@ -64,7 +71,7 @@ export const Messages = () => {
   //       })
   //     );
   //   }
-  // }, [
+  // }, [  
   //   dispatch,
   //   initialPayload,
   //   messages.length,
