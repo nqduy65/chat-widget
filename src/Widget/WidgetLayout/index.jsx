@@ -27,14 +27,13 @@ export const WidgetLayout = (props) => {
   console.log("courseId", courseId);
   let userIdRef = useRef(_userId);
 
-  const handleNewData = (data) => {
+  const handleNewData = () => {
     dispatch(
       fetchChatHistory({
         rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
         token: token,
       })
     );
-    console.log("data remind", data);
     if (!toggleWidget) {
       dispatch(setNotify(true));
     }
@@ -120,7 +119,7 @@ export const WidgetLayout = (props) => {
           </motion.div>
         )}
         <AnimatePresence>
-          {showNotification && !toggleWidget && (
+          {notify && !toggleWidget && (
             <motion.div
               initial={{ opacity: 1, scale: 0.9, x: 300 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
