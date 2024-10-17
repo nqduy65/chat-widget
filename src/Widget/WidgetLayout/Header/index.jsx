@@ -1,5 +1,5 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
@@ -63,10 +63,18 @@ export const Header = () => {
     const roleKey = event.target.value;
     dispatch(setRole(roleKey)); // Store the key (1, 2, 3) in context
   };
+  // Retrieve the token from localStorage on component mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      dispatch(setToken(storedToken));
+    }
+  }, [token]);
 
   const handleTokenChange = (event) => {
-    const roleKey = event.target.value;
-    dispatch(setToken(roleKey)); // Store the key (1, 2, 3) in context
+    const tokenValue = event.target.value;
+    dispatch(setToken(tokenValue)); // Update the Redux store
+    localStorage.setItem("token", tokenValue); // Store the token in localStorage
   };
 
   const handleRemindToggle = () => {
