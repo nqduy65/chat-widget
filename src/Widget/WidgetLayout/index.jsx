@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import AppContext from "../AppContext";
+import AppContext from "../AppContext";
 import { setToggleWidget, setUserId } from "../widgetSlice";
 import { Header } from "./Header";
 import { Keypad } from "./Keypad";
@@ -15,11 +15,11 @@ export const WidgetLayout = (props) => {
     (state) => state.widgetState
   );
 
-  let { userId, embedded } = props;
+  let { userId, embedded, courseId } = props;
+  console.log("userId", userId);
+  console.log("courseId", courseId);
   let userIdRef = useRef(_userId);
   const [showNotification, setShowNotification] = useState(true);
-  let appContext = useSelector((state) => state.appState);
-  let widget = useSelector((state) => state.widgetState);
 
   useEffect(() => {
     // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
@@ -48,9 +48,9 @@ export const WidgetLayout = (props) => {
     dispatch(setToggleWidget(true)); // Open the widget
   };
 
-
   if (embedded) {
     return (
+      <AppContext.Provider value={{ userId: userIdRef.current, ...props }}>
         <AnimatePresence>
           <div
             className="fixed    flex h-full w-full  flex-col rounded-[1.8rem]   bg-white  font-lato   shadow-md"
@@ -61,12 +61,12 @@ export const WidgetLayout = (props) => {
             <Keypad />
           </div>
         </AnimatePresence>
-
+      </AppContext.Provider>
     );
   }
 
   return (
-
+    <AppContext.Provider value={{ userId: userIdRef.current, ...props }}>
       <AnimatePresence>
         {toggleWidget && (
           <motion.div
@@ -113,6 +113,6 @@ export const WidgetLayout = (props) => {
         </AnimatePresence>
         <Launcher />
       </AnimatePresence>
-
+    </AppContext.Provider>
   );
 };
