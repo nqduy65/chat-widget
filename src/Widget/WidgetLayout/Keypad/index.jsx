@@ -39,7 +39,7 @@ export const Keypad = () => {
       dispatch(toggleBotTyping(true));
       dispatch(
         fetchBotResponse({
-          rasaServerUrl,
+          rasaServerUrl: `${rasaServerUrl}/chat`,
           message: userInput.trim(),
           role: role,
           sender: userId,

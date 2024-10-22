@@ -8,7 +8,7 @@ import { Header } from "./Header";
 import { Keypad } from "./Keypad";
 import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
-import { fetchChatHistory } from "./Messages/messageSlice";
+import { fetchChatHistory, getRemind } from "./Messages/messageSlice";
 import Pusher from "pusher-js";
 
 export const WidgetLayout = (props) => {
@@ -30,7 +30,7 @@ export const WidgetLayout = (props) => {
   const handleNewData = () => {
     dispatch(
       fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
         token: token,
       })
     );
@@ -55,6 +55,15 @@ export const WidgetLayout = (props) => {
       pusher.unsubscribe("moodle-remind");
       pusher.disconnect();
     };
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      getRemind({
+        rasaServerUrl: `${rasaServerUrl}/gettime`,
+        token: token,
+      })
+    );
   }, []);
 
   /* AUTO TRIGGER TO HIDE NOTIFICATION */

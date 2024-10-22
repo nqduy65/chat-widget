@@ -48,7 +48,7 @@ export const Messages = () => {
   useEffect(() => {
     dispatch(
       fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}?chatid=${userId}`,
+        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
         token: token,
       })
     );
@@ -62,7 +62,7 @@ export const Messages = () => {
       dispatch(toggleUserTyping(false));
       dispatch(
         fetchBotResponse({
-          rasaServerUrl,
+          rasaServerUrl: `${rasaServerUrl}/chat`,
           message: initialPayload,
           role: role,
           sender: userId,
