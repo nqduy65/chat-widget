@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     rasaServerUrl: "http://localhost:5001/api/v2",
-    userId: "1",
+    userId: "2",
     courseId: "-1",
     initialPayload: "/greet",
     metadata: {},

@@ -98,6 +98,7 @@ export const fetchChatHistory = createAsyncThunk(
           title: "Oops...",
           text: "Missing token!"
         })
+        return {error: "Missing token"};
       }
 
       // Parse the response into JSON
