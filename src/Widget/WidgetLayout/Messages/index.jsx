@@ -5,14 +5,7 @@ import { useScrollBottom } from "../../../hooks/useScrollBottom";
 import AppContext from "../../AppContext";
 import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
-import {
-  fetchBotResponse,
-  fetchChatHistory,
-  setUserGreeted,
-  setUserTypingPlaceholder,
-  toggleBotTyping,
-  toggleUserTyping,
-} from "./messageSlice";
+import { fetchChatHistory } from "./messageSlice";
 const MessagesDiv = styled.div`
 /* width */
 ::-webkit-scrollbar {
@@ -38,11 +31,10 @@ export const Messages = () => {
   const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
-  const { widgetColor, initialPayload, rasaServerUrl, userId, courseId } =
-    appContext;
+  const { widgetColor, rasaServerUrl, userId } = appContext;
 
-  let { role, token } = useSelector((state) => state.widgetState);
-  const { messages, userGreeted } = useSelector((state) => state.messageState);
+  let { token } = useSelector((state) => state.widgetState);
+  const { messages } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
 
   useEffect(() => {
@@ -54,34 +46,34 @@ export const Messages = () => {
     );
   }, []);
 
-  useEffect(() => {
-    if (!userGreeted && messages.length < 1) {
-      dispatch(setUserGreeted(true));
-      dispatch(setUserTypingPlaceholder("Please wait while bot is typing..."));
-      dispatch(toggleBotTyping(true));
-      dispatch(toggleUserTyping(false));
-      dispatch(
-        fetchBotResponse({
-          rasaServerUrl: `${rasaServerUrl}/chat`,
-          message: initialPayload,
-          role: role,
-          sender: userId,
-          courseId: courseId,
-          token: token,
-        })
-      );
-    }
-  }, [
-    dispatch,
-    initialPayload,
-    messages.length,
-    rasaServerUrl,
-    userGreeted,
-    userId,
-    role,
-    token,
-    courseId,
-  ]);
+  // useEffect(() => {
+  //   if (!userGreeted && messages.length < 1) {
+  //     dispatch(setUserGreeted(true));
+  //     dispatch(setUserTypingPlaceholder("Please wait while bot is typing..."));
+  //     dispatch(toggleBotTyping(true));
+  //     dispatch(toggleUserTyping(false));
+  //     dispatch(
+  //       fetchBotResponse({
+  //         rasaServerUrl: `${rasaServerUrl}/chat`,
+  //         message: initialPayload,
+  //         role: role,
+  //         sender: userId,
+  //         courseId: courseId,
+  //         token: token,
+  //       })
+  //     );
+  //   }
+  // }, [
+  //   dispatch,
+  //   initialPayload,
+  //   messages.length,
+  //   rasaServerUrl,
+  //   userGreeted,
+  //   userId,
+  //   role,
+  //   token,
+  //   courseId,
+  // ]);
   return (
     <>
       <MessagesDiv
