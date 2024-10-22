@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { setRemind, setRemindTime } from "../../widgetSlice";
+import Swal from "sweetalert2";
 
 export const fetchBotResponse = createAsyncThunk(
   "messages/fetchBotResponse",
@@ -83,7 +84,20 @@ export const fetchChatHistory = createAsyncThunk(
         method: "GET",
       });
       if (response.status === 401) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid token!",
+        });
+
+        thunkAPI.dispatch(setMessage([]));
         return { error: "Invalid token" };
+      } else if (response.status === 403) {
+        Swal.fire({
+          icon: "warning",
+          title: "Oops...",
+          text: "Missing token!"
+        })
       }
 
       // Parse the response into JSON
@@ -94,7 +108,7 @@ export const fetchChatHistory = createAsyncThunk(
       // Iterate over each entry in the chat history
       chatHistory.forEach((entry) => {
         const parsedContent = JSON.parse(entry.content);
-
+        console.log("PARSE_CONTENT: ",parsedContent);
         // Parse bot message
         const botMessage = {
           text: parsedContent.bot.message,
@@ -111,12 +125,22 @@ export const fetchChatHistory = createAsyncThunk(
           ts: new Date(parsedContent.user.time),
         };
         // Add both messages to the history array
-        history.push(userMessage);
-        history.push(botMessage);
+        if (parsedContent.user.message !== "") {
+          history.push(userMessage);
+        }
+        if (parsedContent.bot.message !== "") {
+          history.push(botMessage);
+        }
       });
       thunkAPI.dispatch(setMessage(history));
+
       return { message: "Fetch successfully" };
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!"
+      })
       console.error("Failed to fetch chat history:", error);
       return thunkAPI.rejectWithValue({ error: error.message });
     }
@@ -140,8 +164,10 @@ export const getRemind = createAsyncThunk(
       });
       const remind = await response.json();
       console.log(remind);
-      thunkAPI.dispatch(setRemind(!!remind[0].value));
-      thunkAPI.dispatch(setRemindTime(remind[0].value));
+
+        thunkAPI.dispatch(setRemind(!!remind[0].value));
+        thunkAPI.dispatch(setRemindTime(remind[0].value));
+
       // Parse the response into JSON
     } catch (error) {
       console.error("Failed to fetch remind:", error);
@@ -171,9 +197,31 @@ export const setRemindApi = createAsyncThunk(
         body: JSON.stringify(body),
       });
       thunkAPI.dispatch(setRemindTime(body.time));
+      Swal.fire({
+        icon: "success",
+        title: "Set reminder successfully!",
+        showClass: {
+          popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+        },
+        hideClass: {
+          popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+        }
+      });
       // Parse the response into JSON
     } catch (error) {
-      console.error("Failed to fetch remind:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }

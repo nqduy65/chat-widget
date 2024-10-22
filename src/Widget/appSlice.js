@@ -13,7 +13,7 @@ const initialState = {
     textColor: "#4c1d95",
     userMsgBackgroundColor: "#e1d7ff",
     botTitle: "Moodle Bot",
-    botSubTitle: "Assistant",
+    botSubTitle: "",
     botMsgBackgroundColor: "#f3f4f6",
     botResponseDelay: "",
     chatHeaderCss: {

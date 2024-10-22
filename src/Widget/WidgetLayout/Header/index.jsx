@@ -23,6 +23,7 @@ import {
 } from "../Messages/messageSlice";
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
+import Swal from "sweetalert2";
 
 export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
 
@@ -77,6 +78,7 @@ export const Header = () => {
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
+
   };
 
   const handleRemindTimeChange = (event) => {
@@ -88,17 +90,36 @@ export const Header = () => {
   };
 
   const handleClearChatButton = () => {
-    dispatch(removeAllMessages());
-    dispatch(toggleBotTyping(false));
-    dispatch(toggleUserTyping(true));
-    dispatch(setUserTypingPlaceholder("Type your message..."));
+
     setShowDropdown(!showDropdown);
-    dispatch(
-      resetBot({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(removeAllMessages());
+        dispatch(toggleBotTyping(false));
+        dispatch(toggleUserTyping(true));
+        dispatch(setUserTypingPlaceholder("Type your message..."));
+        dispatch(
+            resetBot({
+              rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+              token: token,
+            })
+        );
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+      }
+    });
+
   };
 
   useEffect(() => {
@@ -120,6 +141,24 @@ export const Header = () => {
     if (res.payload.message) {
       setSuccessMessage(res.payload.message);
       setErrorMessage("");
+      Swal.fire({
+        icon: "success",
+        title: "Load token successfully!",
+        showClass: {
+          popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+        },
+        hideClass: {
+          popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+        }
+      });
     }
   };
 
@@ -133,6 +172,7 @@ export const Header = () => {
         remindTime: remindTimeState,
       })
     );
+
   };
   return (
     <>
