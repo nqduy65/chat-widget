@@ -36,6 +36,7 @@ export const Messages = () => {
   let { token } = useSelector((state) => state.widgetState);
   const { messages } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
+  console.log("messages", messages);
 
   useEffect(() => {
     dispatch(

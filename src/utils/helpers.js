@@ -4,7 +4,7 @@ export const createUserMessage = (message) => {
   return {
     text: message,
     sender: "USER",
-    messageType: "text",
+    type: "text",
     ts: new Date(),
   };
 };

@@ -7,8 +7,6 @@ import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
 import {
   roleMap,
-  setRemind,
-  setRemindTime,
   setRole,
   setToken,
 } from "../../widgetSlice";
@@ -24,6 +22,7 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
 
@@ -49,8 +48,6 @@ export const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [selectedModel, setSelectedModel] = useState("Chat GPT 3.5");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [remindState, setRemindState] = useState(remind);
   const [remindTimeState, setRemindTimeState] = useState(remindTime);
   const dropdownRef = useDetectClickOutside({
@@ -78,7 +75,6 @@ export const Header = () => {
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
-
   };
 
   const handleRemindTimeChange = (event) => {
@@ -90,8 +86,6 @@ export const Header = () => {
   };
 
   const handleClearChatButton = () => {
-
-    setShowDropdown(!showDropdown);
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -99,27 +93,22 @@ export const Header = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        setShowDropdown(!showDropdown);
         dispatch(removeAllMessages());
         dispatch(toggleBotTyping(false));
         dispatch(toggleUserTyping(true));
         dispatch(setUserTypingPlaceholder("Type your message..."));
         dispatch(
-            resetBot({
-              rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-              token: token,
-            })
+          resetBot({
+            rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+            token: token,
+          })
         );
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success"
-        });
       }
     });
-
   };
 
   useEffect(() => {
@@ -135,30 +124,10 @@ export const Header = () => {
       })
     );
     if (res.payload.error) {
-      setErrorMessage(res.payload.error);
-      setSuccessMessage("");
+      toast.error("Sync Chat failed!")
     }
     if (res.payload.message) {
-      setSuccessMessage(res.payload.message);
-      setErrorMessage("");
-      Swal.fire({
-        icon: "success",
-        title: "Load token successfully!",
-        showClass: {
-          popup: `
-          animate__animated
-          animate__fadeInUp
-          animate__faster
-        `
-        },
-        hideClass: {
-          popup: `
-          animate__animated
-          animate__fadeOutDown
-          animate__faster
-        `
-        }
-      });
+      toast.success("Sync Chat successfully!")
     }
   };
 
@@ -172,7 +141,6 @@ export const Header = () => {
         remindTime: remindTimeState,
       })
     );
-
   };
   return (
     <>
@@ -254,16 +222,6 @@ export const Header = () => {
             <li className="p-2">
               <label htmlFor="token" className="mr-2">
                 Token:
-                {errorMessage && (
-                  <span className="ml-2 text-xs font-semibold text-red-500">
-                    {errorMessage}
-                  </span>
-                )}
-                {successMessage && (
-                  <span className="ml-2 text-xs font-semibold text-green-500">
-                    {successMessage}
-                  </span>
-                )}
               </label>
               <div className="flex items-center">
                 <input

@@ -8,8 +8,15 @@ import { Header } from "./Header";
 import { Keypad } from "./Keypad";
 import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
-import { fetchChatHistory, getRemind } from "./Messages/messageSlice";
+import {
+  fetchChatHistory,
+  getRemind,
+  toggleBotTyping,
+  toggleUserTyping,
+} from "./Messages/messageSlice";
 import Pusher from "pusher-js";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const WidgetLayout = (props) => {
   const dispatch = useDispatch();
@@ -58,6 +65,8 @@ export const WidgetLayout = (props) => {
   }, []);
 
   useEffect(() => {
+    dispatch(toggleBotTyping(false));
+    dispatch(toggleUserTyping(true));
     dispatch(
       getRemind({
         rasaServerUrl: `${rasaServerUrl}/gettime`,
@@ -114,6 +123,7 @@ export const WidgetLayout = (props) => {
   return (
     <AppContext.Provider value={{ userId: userIdRef.current, ...props }}>
       <AnimatePresence>
+        <ToastContainer />
         {toggleWidget && (
           <motion.div
             className="fixed bottom-5 right-5 z-50 flex h-[579px] w-[400px]  flex-col rounded-[1.8rem]  bg-white font-lato  ring-1  ring-black/5    xs:right-0 xs:h-[calc(100%-100px)] xs:w-full"

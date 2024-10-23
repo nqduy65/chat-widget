@@ -56,7 +56,7 @@ export const Keypad = () => {
       <Textarea
         rows="1"
         className={` mx-4 block w-full resize-none bg-slate-50 p-2.5 text-sm text-gray-900 outline-none ${
-          userTyping ? "cursor-default" : "cursor-not-allowed"
+          userTyping ? "cursor-text" : "cursor-not-allowed"
         }`}
         placeholder={userTypingPlaceholder}
         value={userInput}
