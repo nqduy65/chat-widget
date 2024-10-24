@@ -19,6 +19,7 @@ Widget.prototype = {
   rasaServerUrl: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   initialPayload: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   userId: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  courseId: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   metadata: PropTypes.oneOfType([PropTypes.object, PropTypes.element]),
   botAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   widgetColor: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -47,8 +48,9 @@ Widget.prototype = {
 };
 
 Widget.defaultProps = {
-  rasaServerUrl: "http://localhost:5005/webhooks/rest/webhook",
-  userId: "jitesh97",
+  rasaServerUrl: "http://localhost:5001/api/v2",
+  userId: "2",
+  courseId: "-1",
   initialPayload: "/greet",
   metadata: {},
   botAvatar:
@@ -56,8 +58,8 @@ Widget.defaultProps = {
   widgetColor: "#a78bfa",
   textColor: "#4c1d95",
   userMsgBackgroundColor: "#e1d7ff",
-  botTitle: "Retail Bot",
-  botSubTitle: "Sales & Services Assistant",
+  botTitle: "Moodle Bot",
+  botSubTitle: "",
   botMsgBackgroundColor: "#f3f4f6",
   botResponseDelay: "",
   chatHeaderCss: {

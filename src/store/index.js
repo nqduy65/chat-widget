@@ -4,7 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 
 import widgetReducer from "../Widget/widgetSlice";
 import messageReducer from "../Widget/WidgetLayout/Messages/messageSlice";
-
+import appReducer from "../Widget/appSlice";
 const persistConfig = {
   key: "root",
   storage,
@@ -14,6 +14,7 @@ const persistConfig = {
 const reducers = combineReducers({
   widgetState: widgetReducer,
   messageState: messageReducer,
+  appState: appReducer,
 });
 const persistedReducer = persistReducer(persistConfig, reducers);
 

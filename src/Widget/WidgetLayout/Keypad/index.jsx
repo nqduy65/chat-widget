@@ -3,13 +3,13 @@ import { useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { createUserMessage } from "../../../utils/helpers";
-import AppContext from "../../AppContext";
 import {
   addMessage,
   fetchBotResponse,
   toggleBotTyping,
   toggleUserTyping,
 } from "../Messages/messageSlice";
+import AppContext from "../../AppContext";
 
 const Textarea = styled.textarea`
   -ms-overflow-style: none;
@@ -21,14 +21,16 @@ const Textarea = styled.textarea`
 
 export const Keypad = () => {
   const dispatch = useDispatch();
-  const theme = useContext(AppContext);
+  const appContext = useContext(AppContext);
+
   const [userInput, setUserInput] = useState("");
+  let { role, token } = useSelector((state) => state.widgetState);
   const userTypingPlaceholder = useSelector(
     (state) => state.messageState.userTypingPlaceholder
   );
 
   const userTyping = useSelector((state) => state.messageState.userTyping);
-  const {  rasaServerUrl, userId, textColor } = theme;
+  const { rasaServerUrl, userId, courseId, textColor } = appContext;
 
   const handleSubmit = async () => {
     if (userInput.length > 0) {
@@ -38,9 +40,12 @@ export const Keypad = () => {
       dispatch(toggleBotTyping(true));
       dispatch(
         fetchBotResponse({
-          rasaServerUrl,
+          rasaServerUrl: `${rasaServerUrl}/chat`,
           message: userInput.trim(),
+          role: role,
           sender: userId,
+          courseId: courseId,
+          token: token,
         })
       );
     }
@@ -51,7 +56,7 @@ export const Keypad = () => {
       <Textarea
         rows="1"
         className={` mx-4 block w-full resize-none bg-slate-50 p-2.5 text-sm text-gray-900 outline-none ${
-          userTyping ? "cursor-default" : "cursor-not-allowed"
+          userTyping ? "cursor-text" : "cursor-not-allowed"
         }`}
         placeholder={userTypingPlaceholder}
         value={userInput}

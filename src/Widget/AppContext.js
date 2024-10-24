@@ -9,6 +9,7 @@ const AppContext = createContext({
   botTitle: "",
   botSubTitle: "",
   userId: null,
+  courseId: null,
   textColor: "",
   userMsgBackgroundColor: "",
   botMsgBackgroundColor: "",
@@ -18,7 +19,7 @@ const AppContext = createContext({
   buttonsCss: {},
   chatHeaderCss: {},
   errorMessages: [],
-  embedded:false
+  embedded: false,
 });
 
 export default AppContext;

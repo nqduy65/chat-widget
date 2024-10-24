@@ -1,20 +1,212 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getBotResponse } from "../../../utils/helpers";
+import { setRemind, setRemindTime } from "../../widgetSlice";
+import { toast } from "react-toastify";
 
 export const fetchBotResponse = createAsyncThunk(
   "messages/fetchBotResponse",
   async (payload, thunkAPI) => {
-    const response = await getBotResponse(payload);
-    console.log("bot response", response);
-    await new Promise((r) => setTimeout(r, 1000));
-    return response;
+    try {
+      const body = {
+        content: payload.message,
+        chatId: payload.sender,
+        role: payload.role,
+        courseId: payload.courseId,
+      };
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      if (response.status === 401 || response.status === 403) {
+        thunkAPI.dispatch(
+          addMessage({
+            text: "Oops...Something went wrong. Please contact your admin.",
+            sender: "BOT",
+            type: "text",
+            ts: new Date(),
+          })
+        );
+        return;
+      }
+
+      const reader = response.body.getReader();
+      let isBotTyping = true;
+      const decoder = new TextDecoder();
+      thunkAPI.dispatch(setBotStream());
+
+      while (isBotTyping) {
+        const { done, value } = await reader.read();
+        if (done) {
+          isBotTyping = false;
+          break;
+        }
+
+        const chunk = decoder.decode(value, { stream: true });
+        // Dispatch each chunk as it arrives
+        thunkAPI.dispatch(updateBotStream(chunk));
+        if (chunk.includes("&start&")) {
+          thunkAPI.dispatch(setBotStream());
+        }
+      }
+
+      thunkAPI.dispatch(toggleBotTyping(false));
+      return response;
+    } catch (error) {
+      thunkAPI.dispatch(toggleBotTyping(false));
+    }
   }
 );
 
 export const resetBot = createAsyncThunk(
   "messages/resetBot",
   async (payload, thunkAPI) => {
-    await getBotResponse(payload);
+    try {
+      // Make the API request
+      const respone = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "DELETE",
+      });
+      if (respone.status === 200) {
+        toast.success("Clear messages successfully.");
+      } else {
+        toast.error("Action failed.");
+      }
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const fetchChatHistory = createAsyncThunk(
+  "messages/fetchChatHistory",
+  async (payload, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setBotStream());
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "GET",
+      });
+      if (response.status === 401) {
+        thunkAPI.dispatch(setMessage([]));
+        return { error: "Invalid token" };
+      } else if (response.status === 403) {
+        return { error: "Missing token" };
+      }
+
+      // Parse the response into JSON
+      const chatHistory = await response.json();
+
+      let history = [];
+
+      // Iterate over each entry in the chat history
+      chatHistory.forEach((entry) => {
+        const parsedContent = JSON.parse(entry.content);
+        console.log("PARSE_CONTENT: ", parsedContent);
+        // Parse bot message
+        const botMessage = {
+          text: parsedContent.bot.message,
+          sender: "BOT",
+          type: "text",
+          ts: new Date(parsedContent.bot.time),
+        };
+
+        // Parse user message
+        const userMessage = {
+          text: parsedContent.user.message,
+          sender: "USER",
+          type: "text",
+          ts: new Date(parsedContent.user.time),
+        };
+        // Add both messages to the history array
+        if (parsedContent.user.message !== "") {
+          history.push(userMessage);
+        }
+        if (parsedContent.bot.message !== "") {
+          history.push(botMessage);
+        }
+      });
+      thunkAPI.dispatch(setMessage(history));
+
+      return { message: "Fetch successfully." };
+    } catch (error) {
+      console.error("Failed to fetch chat history:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const getRemind = createAsyncThunk(
+  "messages/getRemind",
+  async (payload, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setBotStream());
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "GET",
+      });
+      const remind = await response.json();
+
+      thunkAPI.dispatch(setRemind(!!remind[0].value));
+      thunkAPI.dispatch(setRemindTime(remind[0].value));
+
+      // Parse the response into JSON
+    } catch (error) {
+      console.error("Failed to fetch remind:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const setRemindApi = createAsyncThunk(
+  "messages/setRemind",
+  async (payload, thunkAPI) => {
+    try {
+      const body = {
+        userId: payload.userId,
+        status: payload.status,
+        time: payload.remindTime,
+      };
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      thunkAPI.dispatch(setRemindTime(body.time));
+      if (response.status === 2000) {
+        toast.success("Setting successfully.");
+      } else {
+        toast.error("Action failed.");
+      }
+    } catch (error) {
+      toast.error("Action failed.");
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
   }
 );
 
@@ -24,11 +216,16 @@ const initialState = {
   userTyping: true,
   userTypingPlaceholder: "Type your message here...",
   userGreeted: false,
+  nextChunk: "",
+  botStream: "",
 };
 export const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
+    setMessage: (state, action) => {
+      state.messages = action.payload;
+    },
     addMessage: (state, action) => {
       if (action.payload.sender === "USER") {
         state.messages = state.messages.map((message) => {
@@ -50,6 +247,24 @@ export const messagesSlice = createSlice({
       }
       state.messages.push(action.payload);
     },
+    setBotStream: (state) => {
+      state.botStream = "";
+      state.nextChunk = "";
+    },
+    updateBotStream: (state, action) => {
+      state.botStream += action.payload; // Append new chunk to botStream
+      state.nextChunk = action.payload;
+    },
+    finalizeBotMessage: (state) => {
+      // Add final botStream data as a message
+      state.messages.push({
+        text: state.botStream,
+        sender: "BOT",
+        type: "text",
+        ts: new Date(),
+      });
+      state.botStream = ""; // Clear botStream after finalizing
+    },
     resetMessageState: () => {
       return initialState;
     },
@@ -68,6 +283,7 @@ export const messagesSlice = createSlice({
       state.userTypingPlaceholder = action.payload
         ? "Please wait for bot response..."
         : "Type your message here...";
+      state.nextChunk = "";
     },
     setUserTypingPlaceholder: (state, action) => {
       state.userTypingPlaceholder = action.payload;
@@ -77,62 +293,32 @@ export const messagesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchBotResponse.fulfilled, (state, action) => {
+    builder.addCase(fetchBotResponse.fulfilled, (state) => {
       state.botTyping = false;
       state.userTyping = true;
       state.userTypingPlaceholder = "Type your message here...";
-      const messages = action.payload;
-      if (messages.length > 0) {
-        for (let index = 0; index < messages.length; index += 1) {
-          const message = messages[index];
-          // messageType: text
-          if (message?.text) {
-            state.messages.push({
-              text: message.text,
-              sender: "BOT",
-              type: "text",
-              ts: new Date(),
-            });
-          }
-
-          // messageType: image
-          if (message?.image) {
-            state.messages.push({
-              src: message.image,
-              sender: "BOT",
-              type: "image",
-              ts: new Date(),
-            });
-          }
-
-          // messageType: buttons
-          if (message?.buttons) {
-            if (message.buttons.length > 0) {
-              state.messages.push({
-                buttons: message.buttons,
-                sender: "BOT",
-                type: "buttons",
-                ts: new Date(),
-                callback: true,
-              });
-            }
-          }
-        }
-      } else {
-        state.messages.push({
-          text: "Unfortunately, I'm having some problem 😅. I would appreciate it if you could try again later",
-          sender: "BOT",
-          type: "text",
-          ts: new Date(),
-        });
+      // Finalize bot message when streaming is done
+      if (state.botStream === "") {
+        return;
       }
+      state.messages.push({
+        text: state.botStream,
+        sender: "BOT",
+        type: "text",
+        ts: new Date(),
+      });
+      state.botStream = "";
     });
   },
 });
 
 export const {
+  setMessage,
   addMessage,
+  setBotStream,
+  updateBotStream,
   removeAllMessages,
+  finalizeBotMessage,
   toggleBotTyping,
   toggleUserTyping,
   setUserTypingPlaceholder,
