@@ -2,7 +2,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setNotify, setToggleWidget, setUserId } from "../widgetSlice";
+import {
+  setNotify,
+  setToggleWidget,
+  setToken,
+  setUserId,
+} from "../widgetSlice";
 import AppContext from "../AppContext";
 import { Header } from "./Header";
 import { Keypad } from "./Keypad";
@@ -10,13 +15,14 @@ import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
 import {
   fetchChatHistory,
+  getToken,
   getRemind,
   toggleBotTyping,
   toggleUserTyping,
 } from "./Messages/messageSlice";
 import Pusher from "pusher-js";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export const WidgetLayout = (props) => {
   const dispatch = useDispatch();
@@ -29,36 +35,47 @@ export const WidgetLayout = (props) => {
 
   const { rasaServerUrl } = useSelector((state) => state.appState);
 
-  let { userId, embedded, courseId } = props;
-  console.log("userId", userId);
-  console.log("courseId", courseId);
+  let { userId, embedded } = props;
   let userIdRef = useRef(_userId);
+  useEffect(() => {
+    const initializeTokenAndFetchHistory = async () => {
+      let tokenResponse;
+      if (!token) {
+        tokenResponse = await dispatch(
+          getToken({
+            rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
+          })
+        ).unwrap();
+        dispatch(setToken(tokenResponse));
+      }
+      // Token fetched successfully, now fetch chat history
+      await dispatch(
+        fetchChatHistory({
+          rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+          token: token,
+        })
+      );
 
-  const handleNewData = () => {
-    dispatch(
-      fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
-    if (!toggleWidget) {
-      dispatch(setNotify(true));
-    }
-  };
+      // If widget is not open, set notify state
+      if (!toggleWidget) {
+        dispatch(setNotify(true));
+      }
+    };
+
+    initializeTokenAndFetchHistory();
+  }, [token]);
+
   useEffect(() => {
     const pusher = new Pusher("9de03240cc8a5c22c658", {
       cluster: "ap1",
       logToConsole: true,
     });
 
-    const channel = pusher.subscribe("moodle-remind");
-
-    channel.bind(userId, handleNewData);
+    pusher.subscribe("moodle-remind");
 
     // Initial fetch of chat history when the component mounts
 
     return () => {
-      channel.unbind(userId, handleNewData);
       pusher.unsubscribe("moodle-remind");
       pusher.disconnect();
     };
@@ -74,17 +91,6 @@ export const WidgetLayout = (props) => {
       })
     );
   }, []);
-
-  /* AUTO TRIGGER TO HIDE NOTIFICATION */
-  // useEffect(() => {
-  //   // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
-  //   const timeoutId = setTimeout(() => {
-  //     dispatch(setNotify(false));
-  //   }, 3000);
-
-  //   // Clear the timeout if the component is unmounted
-  //   return () => clearTimeout(timeoutId);
-  // }, [notify]);
 
   useEffect(() => {
     if (userId) {
