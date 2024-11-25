@@ -11,7 +11,6 @@ import {
   setToken,
 } from "../../widgetSlice";
 import {
-  fetchChatHistory,
   removeAllMessages,
   resetBot,
   setRemindApi,
@@ -22,7 +21,6 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
 
 export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
 
@@ -116,20 +114,6 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-  const handleSyncChatHistory = async () => {
-    const res = await dispatch(
-      fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
-    if (res.payload.error) {
-      toast.error("Sync Chat failed!")
-    }
-    if (res.payload.message) {
-      toast.success("Sync Chat successfully!")
-    }
-  };
 
   const handleSaveRemind = async () => {
     await dispatch(
@@ -218,32 +202,6 @@ export const Header = () => {
                   </option>
                 ))}
               </select>
-            </li>
-            <li className="p-2">
-              <label htmlFor="token" className="mr-2">
-                Token:
-              </label>
-              <div className="flex items-center">
-                <input
-                  id="token"
-                  type="text"
-                  value={token}
-                  onChange={handleTokenChange}
-                  className="rounded-lg border p-1"
-                  style={{ color: textColor, borderColor: textColor }}
-                />
-                <div className="group relative inline-block">
-                  <IconButton
-                    icon={FaSync}
-                    onClick={handleSyncChatHistory}
-                    disabled={!token}
-                    tooltip={"Sync Chat History"}
-                  />
-                  <span className="absolute bottom-full left-1/2 z-50 mb-2 w-max -translate-x-1/2 transform rounded-md bg-gray-700 p-1 text-xs text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    {"Sync Chat history"}
-                  </span>
-                </div>
-              </div>
             </li>
             <li className="p-2">
               <div className="flex items-center">

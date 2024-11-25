@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-    rasaServerUrl: "http://localhost:5001/api/v2",
-    userId: "2",
-    courseId: "-1",
+    rasaServerUrl: "https://54.251.40.120.nip.io:8443/api/v2",
+    userId: "1",
+    courseId: "1",
     initialPayload: "/greet",
     metadata: {},
     botAvatar:

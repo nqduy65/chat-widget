@@ -36,45 +36,18 @@ export const Messages = () => {
   let { token } = useSelector((state) => state.widgetState);
   const { messages } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
-  console.log("messages", messages);
 
   useEffect(() => {
-    dispatch(
-      fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
+    if (token) {
+      dispatch(
+        fetchChatHistory({
+          rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+          token: token,
+        })
+      );
+    }
   }, []);
 
-  // useEffect(() => {
-  //   if (!userGreeted && messages.length < 1) {
-  //     dispatch(setUserGreeted(true));
-  //     dispatch(setUserTypingPlaceholder("Please wait while bot is typing..."));
-  //     dispatch(toggleBotTyping(true));
-  //     dispatch(toggleUserTyping(false));
-  //     dispatch(
-  //       fetchBotResponse({
-  //         rasaServerUrl: `${rasaServerUrl}/chat`,
-  //         message: initialPayload,
-  //         role: role,
-  //         sender: userId,
-  //         courseId: courseId,
-  //         token: token,
-  //       })
-  //     );
-  //   }
-  // }, [
-  //   dispatch,
-  //   initialPayload,
-  //   messages.length,
-  //   rasaServerUrl,
-  //   userGreeted,
-  //   userId,
-  //   role,
-  //   token,
-  //   courseId,
-  // ]);
   return (
     <>
       <MessagesDiv
