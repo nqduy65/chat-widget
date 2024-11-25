@@ -48,9 +48,9 @@ Widget.prototype = {
 };
 
 Widget.defaultProps = {
-  rasaServerUrl: "http://localhost:5001/api/v2/chat",
-  userId: "1",
-  courseId: "1",
+  rasaServerUrl: "http://localhost:5001/api/v2",
+  userId: "2",
+  courseId: "-1",
   initialPayload: "/greet",
   metadata: {},
   botAvatar:
@@ -59,7 +59,7 @@ Widget.defaultProps = {
   textColor: "#4c1d95",
   userMsgBackgroundColor: "#e1d7ff",
   botTitle: "Moodle Bot",
-  botSubTitle: "Assistant",
+  botSubTitle: "",
   botMsgBackgroundColor: "#f3f4f6",
   botResponseDelay: "",
   chatHeaderCss: {

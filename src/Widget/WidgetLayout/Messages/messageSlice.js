@@ -1,48 +1,63 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { setRemind, setRemindTime } from "../../widgetSlice";
+import { toast } from "react-toastify";
 
 export const fetchBotResponse = createAsyncThunk(
   "messages/fetchBotResponse",
   async (payload, thunkAPI) => {
-    const body = {
-      content: payload.message,
-      chatId: payload.sender,
-      role: payload.role,
-      courseId: payload.courseId,
-    };
-    const response = await fetch(payload.rasaServerUrl, {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Authorization: "Bearer " + payload.token,
-      },
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-
-    const reader = response.body.getReader();
-    let isBotTyping = true;
-    const decoder = new TextDecoder();
-    thunkAPI.dispatch(setBotStream());
-
-    while (isBotTyping) {
-      const { done, value } = await reader.read();
-      if (done) {
-        isBotTyping = false;
-        break;
+    try {
+      const body = {
+        content: payload.message,
+        chatId: payload.sender,
+        role: payload.role,
+        courseId: payload.courseId,
+      };
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      if (response.status === 401 || response.status === 403) {
+        thunkAPI.dispatch(
+          addMessage({
+            text: "Oops...Something went wrong. Please contact your admin.",
+            sender: "BOT",
+            type: "text",
+            ts: new Date(),
+          })
+        );
+        return;
       }
 
-      const chunk = decoder.decode(value, { stream: true });
-      // Dispatch each chunk as it arrives
-      thunkAPI.dispatch(updateBotStream(chunk));
-      if (chunk.includes("&start&")) {
-        thunkAPI.dispatch(setBotStream());
+      const reader = response.body.getReader();
+      let isBotTyping = true;
+      const decoder = new TextDecoder();
+      thunkAPI.dispatch(setBotStream());
+
+      while (isBotTyping) {
+        const { done, value } = await reader.read();
+        if (done) {
+          isBotTyping = false;
+          break;
+        }
+
+        const chunk = decoder.decode(value, { stream: true });
+        // Dispatch each chunk as it arrives
+        thunkAPI.dispatch(updateBotStream(chunk));
+        if (chunk.includes("&start&")) {
+          thunkAPI.dispatch(setBotStream());
+        }
       }
+
+      thunkAPI.dispatch(toggleBotTyping(false));
+      return response;
+    } catch (error) {
+      thunkAPI.dispatch(toggleBotTyping(false));
     }
-
-    thunkAPI.dispatch(toggleBotTyping(false));
-    console.log("bot response", response);
-    // await new Promise((r) => setTimeout(r, 1000));
-    return response;
   }
 );
 
@@ -51,7 +66,7 @@ export const resetBot = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       // Make the API request
-      await fetch(payload.rasaServerUrl, {
+      const respone = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
@@ -59,8 +74,12 @@ export const resetBot = createAsyncThunk(
         },
         method: "DELETE",
       });
+      if (respone.status === 200) {
+        toast.success("Clear messages successfully.");
+      } else {
+        toast.error("Action failed.");
+      }
     } catch (error) {
-      console.error("Failed to fetch chat history:", error);
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }
@@ -81,6 +100,12 @@ export const fetchChatHistory = createAsyncThunk(
         },
         method: "GET",
       });
+      if (response.status === 401) {
+        thunkAPI.dispatch(setMessage([]));
+        return { error: "Invalid token" };
+      } else if (response.status === 403) {
+        return { error: "Missing token" };
+      }
 
       // Parse the response into JSON
       const chatHistory = await response.json();
@@ -90,7 +115,7 @@ export const fetchChatHistory = createAsyncThunk(
       // Iterate over each entry in the chat history
       chatHistory.forEach((entry) => {
         const parsedContent = JSON.parse(entry.content);
-
+        console.log("PARSE_CONTENT: ", parsedContent);
         // Parse bot message
         const botMessage = {
           text: parsedContent.bot.message,
@@ -115,8 +140,71 @@ export const fetchChatHistory = createAsyncThunk(
         }
       });
       thunkAPI.dispatch(setMessage(history));
+
+      return { message: "Fetch successfully." };
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const getRemind = createAsyncThunk(
+  "messages/getRemind",
+  async (payload, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(setBotStream());
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "GET",
+      });
+      const remind = await response.json();
+
+      thunkAPI.dispatch(setRemind(!!remind[0].value));
+      thunkAPI.dispatch(setRemindTime(remind[0].value));
+
+      // Parse the response into JSON
+    } catch (error) {
+      console.error("Failed to fetch remind:", error);
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const setRemindApi = createAsyncThunk(
+  "messages/setRemind",
+  async (payload, thunkAPI) => {
+    try {
+      const body = {
+        userId: payload.userId,
+        status: payload.status,
+        time: payload.remindTime,
+      };
+
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
+        },
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      thunkAPI.dispatch(setRemindTime(body.time));
+      if (response.status === 2000) {
+        toast.success("Setting successfully.");
+      } else {
+        toast.error("Action failed.");
+      }
+    } catch (error) {
+      toast.error("Action failed.");
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }
@@ -206,10 +294,13 @@ export const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchBotResponse.fulfilled, (state) => {
-      // Finalize bot message when streaming is done
       state.botTyping = false;
       state.userTyping = true;
       state.userTypingPlaceholder = "Type your message here...";
+      // Finalize bot message when streaming is done
+      if (state.botStream === "") {
+        return;
+      }
       state.messages.push({
         text: state.botStream,
         sender: "BOT",

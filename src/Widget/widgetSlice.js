@@ -10,6 +10,7 @@ const initialState = {
   toggleWidget: false,
   notify: false,
   userId: null,
+  remind: false,
   remindTime: "",
   role: roleMap["Default"],
   token: "",
@@ -31,6 +32,9 @@ export const widgetSlice = createSlice({
     setRemindTime: (state, action) => {
       state.remindTime = action.payload;
     },
+    setRemind: (state, action) => {
+      state.remind = action.payload;
+    },
     setRole: (state, action) => {
       state.role = action.payload;
     },
@@ -45,6 +49,7 @@ export const {
   setNotify,
   setUserId,
   setRemindTime,
+  setRemind,
   setRole,
   setToken,
 } = widgetSlice.actions;
