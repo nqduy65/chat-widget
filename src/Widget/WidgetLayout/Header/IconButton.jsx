@@ -10,8 +10,9 @@ export const IconButton = ({ icon: Icon, onClick, disabled, tooltip }) => {
         }`}
         disabled={disabled} // This will visually disable the button
         title={tooltip} // Tooltip for the button
+
       >
-        <Icon className="h-5 w-5" />
+        <Icon className="h-4 w-4 text-white" />
       </button>
     </div>
   );
