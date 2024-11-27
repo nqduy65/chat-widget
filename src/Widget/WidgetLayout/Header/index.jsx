@@ -1,15 +1,11 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
-import { FaSave, FaSync } from "react-icons/fa"; // Import your icon
+import { FaSave } from "react-icons/fa"; // Import your icon
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  roleMap,
-  setRole,
-  setToken,
-} from "../../widgetSlice";
+import { roleMap, setRole, setToken } from "../../widgetSlice";
 import {
   removeAllMessages,
   resetBot,
@@ -67,12 +63,6 @@ export const Header = () => {
     }
   }, []);
 
-  const handleTokenChange = (event) => {
-    const tokenValue = event.target.value;
-    dispatch(setToken(tokenValue)); // Update the Redux store
-    localStorage.setItem("token", tokenValue); // Store the token in localStorage
-  };
-
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
   };
@@ -116,7 +106,6 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-
   const handleSaveRemind = async () => {
     await dispatch(
       setRemindApi({
@@ -143,7 +132,11 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased text-white">{botTitle}</div>
-          <p className="text-cyan-100">{`${mapRole[role]} ${botSubTitle}`}</p>
+          <p className="text-cyan-100">
+            {token
+              ? `${mapRole[role]} ${botSubTitle}`
+              : `${mapRole[3]} ${botSubTitle}`}
+          </p>
         </div>
         <motion.div
             whileHover={{scale: 1.2}}

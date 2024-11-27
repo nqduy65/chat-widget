@@ -28,25 +28,12 @@ const MessagesDiv = styled.div`
 }
 `;
 export const Messages = () => {
-  const dispatch = useDispatch();
   const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
-  const { widgetColor, rasaServerUrl, userId } = appContext;
+  const { widgetColor } = appContext;
 
-  let { token } = useSelector((state) => state.widgetState);
   const { messages } = useSelector((state) => state.messageState);
   const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
-
-  useEffect(() => {
-    if (token) {
-      dispatch(
-        fetchChatHistory({
-          rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-          token: token,
-        })
-      );
-    }
-  }, []);
 
   return (
     <>
