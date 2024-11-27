@@ -23,7 +23,9 @@
     "redux-persist": "^6.0.0",
     "remark-gfm": "^3.0.1",
     "styled-components": "^5.3.6",
-    "sweetalert2": "^11.14.4"
+    "sweetalert2": "^11.14.4",
+    "styled-components": "^5.3.6",
+    "yarn": "^1.22.22"
   },
   "peerDependencies": {
     "react": "^18.2.0",

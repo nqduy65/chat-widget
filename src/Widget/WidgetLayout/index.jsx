@@ -116,7 +116,16 @@ export const WidgetLayout = (props) => {
     dispatch(setNotify(false));
     dispatch(setToggleWidget(true)); // Open the widget
   };
+  useEffect(() => {
+    const handleParentMessage = (event) => {
+      if (event.data.type === 'TOGGLE_WIDGET') {
+        dispatch(setToggleWidget(event.data.data.isOpen));
+      }
+    };
 
+    window.addEventListener('message', handleParentMessage);
+    return () => window.removeEventListener('message', handleParentMessage);
+  }, []);
   if (embedded) {
     return (
       <AppContext.Provider value={{ userId: userIdRef.current, ...props }}>
@@ -206,7 +215,7 @@ export const WidgetLayout = (props) => {
             </div>
           </motion.div>
         )}
-        <Launcher />
+        {/*<Launcher />*/}
       </AnimatePresence>
     </AppContext.Provider>
   );

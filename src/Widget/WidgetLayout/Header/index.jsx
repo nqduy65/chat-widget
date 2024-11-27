@@ -1,12 +1,17 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
-import { FaSave } from "react-icons/fa"; // Import your icon
+import { FaSave, FaSync } from "react-icons/fa"; // Import your icon
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import { roleMap, setRole, setToken } from "../../widgetSlice";
 import {
+  roleMap,
+  setRole,
+  setToken,
+} from "../../widgetSlice";
+import {
+  fetchChatHistory,
   removeAllMessages,
   resetBot,
   setRemindApi,
@@ -17,6 +22,8 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import JellyfishAvatar from "./avatar";
 
 export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
 
@@ -61,6 +68,12 @@ export const Header = () => {
     }
   }, []);
 
+  const handleTokenChange = (event) => {
+    const tokenValue = event.target.value;
+    dispatch(setToken(tokenValue)); // Update the Redux store
+    localStorage.setItem("token", tokenValue); // Store the token in localStorage
+  };
+
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
   };
@@ -104,6 +117,21 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
+  const handleSyncChatHistory = async () => {
+    const res = await dispatch(
+      fetchChatHistory({
+        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+        token: token,
+      })
+    );
+    if (res.payload.error) {
+      toast.error("Sync Chat failed!")
+    }
+    if (res.payload.message) {
+      toast.success("Sync Chat successfully!")
+    }
+  };
+
   const handleSaveRemind = async () => {
     await dispatch(
       setRemindApi({
@@ -122,10 +150,11 @@ export const Header = () => {
         style={{ backgroundColor, color: textColor }}
       >
         <div
-          className="shrink-0 rounded-full border-[1px] p-2"
-          style={{ borderColor: textColor, borderWidth: enableBotAvatarBorder }}
+            className="shrink-0 rounded-full border-[1px] h-16 w-16"
+            style={{borderColor: textColor, borderWidth: enableBotAvatarBorder}}
         >
-          <img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />
+          {/*<img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />*/}
+          <JellyfishAvatar  />
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
@@ -136,13 +165,13 @@ export const Header = () => {
           </p>
         </div>
         <motion.div
-          whileHover={{ scale: 1.2 }}
-          className="flex"
-          onClick={() => {
-            setShowDropdown(!showDropdown);
-          }}
+            whileHover={{scale: 1.2}}
+            className="flex"
+            onClick={() => {
+              setShowDropdown(!showDropdown);
+            }}
         >
-          <Bars3BottomRightIcon className="h-7 w-7" />
+          <Bars3BottomRightIcon className="h-7 w-7"/>
         </motion.div>
       </div>
       {showDropdown && (
@@ -160,24 +189,6 @@ export const Header = () => {
               border: `1px solid ${textColor}`,
             }}
           >
-            <li className="p-2">
-              <label htmlFor="model" className="mr-2">
-                Model:
-              </label>
-              <select
-                id="model"
-                value={selectedModel}
-                onChange={handleModelChange}
-                className="rounded-lg border p-1"
-                style={{ color: textColor, borderColor: textColor }}
-              >
-                {models.map((model, idx) => (
-                  <option key={idx} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </li>
             <li className="p-2">
               <label htmlFor="role" className="mr-2">
                 Role:
@@ -228,23 +239,23 @@ export const Header = () => {
               </div>
             </li>
 
-            <li className="p-2">
-              <div
-                className="flex cursor-pointer hover:opacity-70"
-                onClick={() => handleClearChatButton()}
-              >
-                <div className="flex items-center justify-center pl-2">
-                  <Icon name={"Clear Chat"} />
+              <li className="p-2">
+                <div
+                    className="flex cursor-pointer hover:opacity-70"
+                    onClick={() => handleClearChatButton()}
+                >
+                  <div className="flex items-center justify-center pl-2">
+                    <Icon name={"Clear Chat"} />
+                  </div>
+                  <div>
+                    <span className="block py-2 px-2">{"Clear Chat"}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="block py-2 px-2">{"Clear Chat"}</span>
-                </div>
-              </div>
 
-              {/* Add Save button below Clear Chat */}
-            </li>
-          </ul>
-        </div>
+                {/* Add Save button below Clear Chat */}
+              </li>
+            </ul>
+          </div>
       )}
     </>
   );
