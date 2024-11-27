@@ -2,27 +2,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setNotify,
-  setToggleWidget,
-  setToken,
-  setUserId,
-} from "../widgetSlice";
+import { setNotify, setToggleWidget, setUserId } from "../widgetSlice";
 import AppContext from "../AppContext";
 import { Header } from "./Header";
 import { Keypad } from "./Keypad";
 import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
 import {
+  addMessage,
+  fetchBotResponse,
   fetchChatHistory,
-  getToken,
   getRemind,
+  getToken,
   toggleBotTyping,
   toggleUserTyping,
 } from "./Messages/messageSlice";
 import Pusher from "pusher-js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { createUserMessage } from "../../utils/helpers";
 
 export const WidgetLayout = (props) => {
   const dispatch = useDispatch();
@@ -31,38 +29,46 @@ export const WidgetLayout = (props) => {
     userId: _userId,
     notify,
     token,
+    role,
   } = useSelector((state) => state.widgetState);
+  const { messages } = useSelector((state) => state.messageState);
 
   const { rasaServerUrl } = useSelector((state) => state.appState);
-
   let { userId, embedded } = props;
   let userIdRef = useRef(_userId);
+
+  const handleNewData = () => {
+    dispatch(
+      fetchChatHistory({
+        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+        token: token,
+      })
+    );
+    if (!toggleWidget) {
+      dispatch(setNotify(true));
+    }
+  };
+
   useEffect(() => {
     const initializeTokenAndFetchHistory = async () => {
-      let tokenResponse;
-      if (!token) {
-        tokenResponse = await dispatch(
-          getToken({
-            rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
-          })
-        ).unwrap();
-        dispatch(setToken(tokenResponse));
-      }
-      // Token fetched successfully, now fetch chat history
       await dispatch(
+        getToken({
+          rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
+        })
+      );
+    };
+    initializeTokenAndFetchHistory();
+    // Token fetched successfully, now fetch chat history
+  }, []);
+  useEffect(() => {
+    if (token) {
+      dispatch(
         fetchChatHistory({
           rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
           token: token,
         })
       );
-
-      // If widget is not open, set notify state
-      if (!toggleWidget) {
-        dispatch(setNotify(true));
-      }
-    };
-
-    initializeTokenAndFetchHistory();
+    }
   }, [token]);
 
   useEffect(() => {
@@ -71,15 +77,18 @@ export const WidgetLayout = (props) => {
       logToConsole: true,
     });
 
-    pusher.subscribe("moodle-remind");
+    const channel = pusher.subscribe("moodle-remind");
+
+    channel.bind(userId, handleNewData);
 
     // Initial fetch of chat history when the component mounts
 
     return () => {
+      channel.unbind(userId, handleNewData);
       pusher.unsubscribe("moodle-remind");
       pusher.disconnect();
     };
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     dispatch(toggleBotTyping(false));
@@ -103,7 +112,6 @@ export const WidgetLayout = (props) => {
       }
     }
   }, [userId]);
-
   const handleNotificationClick = () => {
     dispatch(setNotify(false));
     dispatch(setToggleWidget(true)); // Open the widget
@@ -118,7 +126,7 @@ export const WidgetLayout = (props) => {
             key="widget"
           >
             <Header />
-            <Messages />
+            {token && <Messages />}
             <Keypad />
           </div>
         </AnimatePresence>
@@ -139,8 +147,34 @@ export const WidgetLayout = (props) => {
             key="widget"
           >
             <Header />
-            <Messages />
-            <Keypad />
+            {!messages.length && (
+              <div className="flex h-full flex-col items-center justify-center px-4 text-center font-semibold">
+                Chào mừng bạn đến với hệ thống Moodle Chacochi! Trợ lý ảo đồng
+                hành cùng bạn trên hành trình chinh phục tri thức tại Chacochi.
+                <button
+                  className="mt-4 rounded bg-[#a78bfa] px-6 py-2 text-black hover:bg-[#8b5cf6]"
+                  onClick={() => {
+                    dispatch(addMessage(createUserMessage("Start chat")));
+                    dispatch(toggleUserTyping(false));
+                    dispatch(toggleBotTyping(true));
+                    dispatch(
+                      fetchBotResponse({
+                        rasaServerUrl: `${rasaServerUrl}/chat`,
+                        message: "Start chat",
+                        role: role,
+                        sender: userId,
+                        courseId: 1,
+                        token: token,
+                      })
+                    );
+                  }}
+                >
+                  Start Chat
+                </button>
+              </div>
+            )}
+            {messages.length > 0 && <Messages />}
+            {messages.length > 0 && <Keypad />}
           </motion.div>
         )}
         {notify && !toggleWidget && (

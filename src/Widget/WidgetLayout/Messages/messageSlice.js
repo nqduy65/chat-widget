@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { setRemind, setRemindTime, setToken } from "../../widgetSlice";
+import { setRemind, setRemindTime, setRole, setToken } from "../../widgetSlice";
 import { toast } from "react-toastify";
 
 export const fetchBotResponse = createAsyncThunk(
@@ -80,6 +80,7 @@ export const resetBot = createAsyncThunk(
         toast.error("Action failed.");
       }
     } catch (error) {
+      console.log("TCL: error", error);
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }
@@ -223,6 +224,9 @@ export const getToken = createAsyncThunk(
       });
       const res = await response.json();
 
+      if (!res) {
+        thunkAPI.dispatch(setRole(3));
+      }
       thunkAPI.dispatch(setToken(res.token));
       return res.token;
 
