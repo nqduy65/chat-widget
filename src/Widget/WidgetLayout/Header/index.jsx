@@ -1,17 +1,12 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
-import { FaSave, FaSync } from "react-icons/fa"; // Import your icon
+import { FaSave } from "react-icons/fa"; // Import your icon
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
+import { roleMap, setRole, setToken } from "../../widgetSlice";
 import {
-  roleMap,
-  setRole,
-  setToken,
-} from "../../widgetSlice";
-import {
-  fetchChatHistory,
   removeAllMessages,
   resetBot,
   setRemindApi,
@@ -22,7 +17,6 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
 
 export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
 
@@ -67,12 +61,6 @@ export const Header = () => {
     }
   }, []);
 
-  const handleTokenChange = (event) => {
-    const tokenValue = event.target.value;
-    dispatch(setToken(tokenValue)); // Update the Redux store
-    localStorage.setItem("token", tokenValue); // Store the token in localStorage
-  };
-
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
   };
@@ -116,21 +104,6 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-  const handleSyncChatHistory = async () => {
-    const res = await dispatch(
-      fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
-    if (res.payload.error) {
-      toast.error("Sync Chat failed!")
-    }
-    if (res.payload.message) {
-      toast.success("Sync Chat successfully!")
-    }
-  };
-
   const handleSaveRemind = async () => {
     await dispatch(
       setRemindApi({
@@ -156,7 +129,11 @@ export const Header = () => {
         </div>
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">{`${mapRole[role]} ${botSubTitle}`}</p>
+          <p className="">
+            {token
+              ? `${mapRole[role]} ${botSubTitle}`
+              : `${mapRole[3]} ${botSubTitle}`}
+          </p>
         </div>
         <motion.div
           whileHover={{ scale: 1.2 }}
@@ -207,10 +184,11 @@ export const Header = () => {
               </label>
               <select
                 id="role"
-                value={role}
+                value={token ? role : 3}
                 onChange={handleRoleChange}
                 className="rounded-lg border p-1"
                 style={{ color: textColor, borderColor: textColor }}
+                disabled={!token}
               >
                 {Object.entries(roleMap).map((key, role) => (
                   <option key={key} value={key[1]}>
@@ -218,32 +196,6 @@ export const Header = () => {
                   </option>
                 ))}
               </select>
-            </li>
-            <li className="p-2">
-              <label htmlFor="token" className="mr-2">
-                Token:
-              </label>
-              <div className="flex items-center">
-                <input
-                  id="token"
-                  type="text"
-                  value={token}
-                  onChange={handleTokenChange}
-                  className="rounded-lg border p-1"
-                  style={{ color: textColor, borderColor: textColor }}
-                />
-                <div className="group relative inline-block">
-                  <IconButton
-                    icon={FaSync}
-                    onClick={handleSyncChatHistory}
-                    disabled={!token}
-                    tooltip={"Sync Chat History"}
-                  />
-                  <span className="absolute bottom-full left-1/2 z-50 mb-2 w-max -translate-x-1/2 transform rounded-md bg-gray-700 p-1 text-xs text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    {"Sync Chat history"}
-                  </span>
-                </div>
-              </div>
             </li>
             <li className="p-2">
               <div className="flex items-center">

@@ -14,7 +14,6 @@ export const BotTyping = () => {
   useEffect(() => {
     let animationFrameId;
     let charIndex = 0;
-    let timeoutId = 0;
     function sleep(ms) {
       return new Promise((res) => setTimeout(res, ms));
     }

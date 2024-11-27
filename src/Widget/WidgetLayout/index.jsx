@@ -9,14 +9,18 @@ import { Keypad } from "./Keypad";
 import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
 import {
+  addMessage,
+  fetchBotResponse,
   fetchChatHistory,
   getRemind,
+  getToken,
   toggleBotTyping,
   toggleUserTyping,
 } from "./Messages/messageSlice";
 import Pusher from "pusher-js";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import { createUserMessage } from "../../utils/helpers";
 
 export const WidgetLayout = (props) => {
   const dispatch = useDispatch();
@@ -25,13 +29,12 @@ export const WidgetLayout = (props) => {
     userId: _userId,
     notify,
     token,
+    role,
   } = useSelector((state) => state.widgetState);
+  const { messages } = useSelector((state) => state.messageState);
 
   const { rasaServerUrl } = useSelector((state) => state.appState);
-
-  let { userId, embedded, courseId } = props;
-  console.log("userId", userId);
-  console.log("courseId", courseId);
+  let { userId, embedded } = props;
   let userIdRef = useRef(_userId);
 
   const handleNewData = () => {
@@ -45,6 +48,29 @@ export const WidgetLayout = (props) => {
       dispatch(setNotify(true));
     }
   };
+
+  useEffect(() => {
+    const initializeTokenAndFetchHistory = async () => {
+      await dispatch(
+        getToken({
+          rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
+        })
+      );
+    };
+    initializeTokenAndFetchHistory();
+    // Token fetched successfully, now fetch chat history
+  }, []);
+  useEffect(() => {
+    if (token) {
+      dispatch(
+        fetchChatHistory({
+          rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+          token: token,
+        })
+      );
+    }
+  }, [token]);
+
   useEffect(() => {
     const pusher = new Pusher("9de03240cc8a5c22c658", {
       cluster: "ap1",
@@ -62,7 +88,7 @@ export const WidgetLayout = (props) => {
       pusher.unsubscribe("moodle-remind");
       pusher.disconnect();
     };
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     dispatch(toggleBotTyping(false));
@@ -75,17 +101,6 @@ export const WidgetLayout = (props) => {
     );
   }, []);
 
-  /* AUTO TRIGGER TO HIDE NOTIFICATION */
-  // useEffect(() => {
-  //   // Set a timeout to hide the notification after 3 seconds (3000 milliseconds)
-  //   const timeoutId = setTimeout(() => {
-  //     dispatch(setNotify(false));
-  //   }, 3000);
-
-  //   // Clear the timeout if the component is unmounted
-  //   return () => clearTimeout(timeoutId);
-  // }, [notify]);
-
   useEffect(() => {
     if (userId) {
       userIdRef.current = userId;
@@ -97,7 +112,6 @@ export const WidgetLayout = (props) => {
       }
     }
   }, [userId]);
-
   const handleNotificationClick = () => {
     dispatch(setNotify(false));
     dispatch(setToggleWidget(true)); // Open the widget
@@ -112,7 +126,7 @@ export const WidgetLayout = (props) => {
             key="widget"
           >
             <Header />
-            <Messages />
+            {token && <Messages />}
             <Keypad />
           </div>
         </AnimatePresence>
@@ -133,8 +147,34 @@ export const WidgetLayout = (props) => {
             key="widget"
           >
             <Header />
-            <Messages />
-            <Keypad />
+            {!messages.length && (
+              <div className="flex h-full flex-col items-center justify-center px-4 text-center font-semibold">
+                Chào mừng bạn đến với hệ thống Moodle Chacochi! Trợ lý ảo đồng
+                hành cùng bạn trên hành trình chinh phục tri thức tại Chacochi.
+                <button
+                  className="mt-4 rounded bg-[#a78bfa] px-6 py-2 text-black hover:bg-[#8b5cf6]"
+                  onClick={() => {
+                    dispatch(addMessage(createUserMessage("Start chat")));
+                    dispatch(toggleUserTyping(false));
+                    dispatch(toggleBotTyping(true));
+                    dispatch(
+                      fetchBotResponse({
+                        rasaServerUrl: `${rasaServerUrl}/chat`,
+                        message: "Start chat",
+                        role: role,
+                        sender: userId,
+                        courseId: 1,
+                        token: token,
+                      })
+                    );
+                  }}
+                >
+                  Start Chat
+                </button>
+              </div>
+            )}
+            {messages.length > 0 && <Messages />}
+            {messages.length > 0 && <Keypad />}
           </motion.div>
         )}
         {notify && !toggleWidget && (

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { setRemind, setRemindTime } from "../../widgetSlice";
+import { setRemind, setRemindTime, setRole, setToken } from "../../widgetSlice";
 import { toast } from "react-toastify";
 
 export const fetchBotResponse = createAsyncThunk(
@@ -80,6 +80,7 @@ export const resetBot = createAsyncThunk(
         toast.error("Action failed.");
       }
     } catch (error) {
+      console.log("TCL: error", error);
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }
@@ -115,7 +116,6 @@ export const fetchChatHistory = createAsyncThunk(
       // Iterate over each entry in the chat history
       chatHistory.forEach((entry) => {
         const parsedContent = JSON.parse(entry.content);
-        console.log("PARSE_CONTENT: ", parsedContent);
         // Parse bot message
         const botMessage = {
           text: parsedContent.bot.message,
@@ -205,6 +205,34 @@ export const setRemindApi = createAsyncThunk(
       }
     } catch (error) {
       toast.error("Action failed.");
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+export const getToken = createAsyncThunk(
+  "messages/getToken",
+  async (payload, thunkAPI) => {
+    try {
+      // Make the API request
+      const response = await fetch(payload.rasaServerUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        method: "GET",
+      });
+      const res = await response.json();
+
+      if (!res) {
+        thunkAPI.dispatch(setRole(3));
+      }
+      thunkAPI.dispatch(setToken(res.token));
+      return res.token;
+
+      // Parse the response into JSON
+    } catch (error) {
+      console.error("Failed to fetch token:", error);
       return thunkAPI.rejectWithValue({ error: error.message });
     }
   }
