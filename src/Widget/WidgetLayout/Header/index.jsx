@@ -1,5 +1,5 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
-import { FaSave, FaSync } from "react-icons/fa"; // Import your icon
+import { FaSave } from "react-icons/fa"; // Import your icon
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
@@ -11,7 +11,6 @@ import {
   setToken,
 } from "../../widgetSlice";
 import {
-  fetchChatHistory,
   removeAllMessages,
   resetBot,
   setRemindApi,
@@ -22,7 +21,6 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
 import JellyfishAvatar from "./avatar";
 
 export const mapRole = ["Default", "Instructor", "Assistant", "Friend"];
@@ -37,7 +35,6 @@ export const Header = () => {
   const {
     botSubTitle,
     botTitle,
-    botAvatar,
     chatHeaderCss,
     rasaServerUrl,
     userId,
@@ -65,11 +62,6 @@ export const Header = () => {
       dispatch(setToken(storedToken));
     }
   }, []);
-  // const handleTokenChange = (event) => {
-  //   const tokenValue = event.target.value;
-  //   dispatch(setToken(tokenValue)); // Update the Redux store
-  //   localStorage.setItem("token", tokenValue); // Store the token in localStorage
-  // };
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
@@ -78,8 +70,6 @@ export const Header = () => {
   const handleRemindTimeChange = (event) => {
     setRemindTimeState(event.target.value); // Update the context
   };
-
-
   const handleClearChatButton = () => {
     Swal.fire({
       title: "Bạn chắc chứ?",
@@ -106,26 +96,11 @@ export const Header = () => {
       }
     });
   };
-
   useEffect(() => {
     setRemindState(remind);
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-  // const handleSyncChatHistory = async () => {
-  //   const res = await dispatch(
-  //     fetchChatHistory({
-  //       rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-  //       token: token,
-  //     })
-  //   );
-  //   if (res.payload.error) {
-  //     toast.error("Sync Chat failed!")
-  //   }
-  //   if (res.payload.message) {
-  //     toast.success("Sync Chat successfully!")
-  //   }
-  // };
 
   const handleSaveRemind = async () => {
     await dispatch(
@@ -154,11 +129,7 @@ export const Header = () => {
         <div className="w-full ">
           <div className="text-xl font-semibold antialiased text-white" >{botTitle}</div>
           <p className="text-amber-50">
-            {/*{token*/}
-            {/*  ? `${mapRole[role]} ${botSubTitle}`*/}
-            {/*  : `${mapRole[0]} ${botSubTitle}`}*/}
              {mapRole[role]} {botSubTitle}
-
           </p>
         </div>
         <motion.div
@@ -196,7 +167,6 @@ export const Header = () => {
                 onChange={handleRoleChange}
                 className="rounded-lg border p-1"
                 style={{ color: textColor, borderColor: textColor }}
-                //disabled={!token}
               >
                 {Object.entries(roleMap).map((key, role) => (
                   <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
@@ -246,11 +216,9 @@ export const Header = () => {
                     <Icon name={"Clear Chat"} />
                   </div>
                   <div>
-                    <span className="block py-2 px-2">{"Clear Chat"}</span>
+                    <span className="block py-2 px-2">{"Xóa đoạn Chat"}</span>
                   </div>
                 </div>
-
-                {/* Add Save button below Clear Chat */}
               </li>
             </ul>
           </div>

@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="adjust alert when click button">
+    <list default="true" id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="almost done">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Header/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Header/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Launcher/index.jsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/messageSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/messageSlice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/appSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/appSlice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Widget/widgetSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/widgetSlice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,20 +80,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev/auth__v2",
-    "last_opened_file_path": "/Users/phatnguyen/Document/Uni/DACN/chat-widget_DN",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#14 on dev/auth__v2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/phatnguyen/Document/Uni/DACN/chat-widget_DN&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -120,6 +123,7 @@
       <workItem from="1732174202783" duration="11533000" />
       <workItem from="1732539757486" duration="2276000" />
       <workItem from="1732726757504" duration="33765000" />
+      <workItem from="1733054236583" duration="7288000" />
     </task>
     <task id="LOCAL-00001" summary="get history almost done.">
       <option name="closed" value="true" />

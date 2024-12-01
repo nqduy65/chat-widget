@@ -163,10 +163,15 @@ export const getRemind = createAsyncThunk(
         method: "GET",
       });
       const remind = await response.json();
-
-      thunkAPI.dispatch(setRemind(!!remind[0].value));
-      thunkAPI.dispatch(setRemindTime(remind[0].value));
-
+      console.log("REMIND: ", remind);
+      if (!remind){
+        console.log("REMIND: ", remind);
+        thunkAPI.dispatch(setRemind(false));
+        thunkAPI.dispatch(setRemindTime(""));
+      } else {
+        thunkAPI.dispatch(setRemind(!!remind.value));
+        thunkAPI.dispatch(setRemindTime(remind.value.toString()));
+      }
       // Parse the response into JSON
     } catch (error) {
       console.error("Failed to fetch remind:", error);
@@ -195,6 +200,7 @@ export const setRemindApi = createAsyncThunk(
         body: JSON.stringify(body),
       });
       thunkAPI.dispatch(setRemindTime(body.time));
+      thunkAPI.dispatch(setRemind(payload.status));
       if (response.status === 200) {
         toast.success("Setting successfully.");
       } else {

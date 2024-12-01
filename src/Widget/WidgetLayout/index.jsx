@@ -2,11 +2,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { nanoid } from "nanoid";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {setNotify, setToggleWidget, setToken, setUserId} from "../widgetSlice";
+import {setNotify, setToggleWidget, setUserId} from "../widgetSlice";
 import AppContext from "../AppContext";
 import { Header } from "./Header";
 import { Keypad } from "./Keypad";
-import { Launcher } from "./Launcher";
 import { Messages } from "./Messages";
 import {
   addMessage,
@@ -32,8 +31,8 @@ export const WidgetLayout = (props) => {
     role,
   } = useSelector((state) => state.widgetState);
   const { messages } = useSelector((state) => state.messageState);
-
   const { rasaServerUrl } = useSelector((state) => state.appState);
+  console.log("url: ", rasaServerUrl);
   let { userId, embedded } = props;
   let userIdRef = useRef(_userId);
 
@@ -49,7 +48,7 @@ export const WidgetLayout = (props) => {
     //}
   };
 
-  useEffect(() => {
+  useEffect( () => {
     const getCookie = (name) => {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -57,28 +56,33 @@ export const WidgetLayout = (props) => {
     };
 
     const moodleSession = getCookie('MoodleSession');
-
-    const initializeTokenAndFetchHistory = async () => {
-      await dispatch(
-        getToken({
-          rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
-          token: moodleSession
-        })
+    const initializeTokenAndFetchHistory = () => {
+      dispatch(
+          getToken({
+            rasaServerUrl: `${rasaServerUrl}/token?userId=${userId}`,
+            token: moodleSession
+          })
       );
     };
     initializeTokenAndFetchHistory();
-    // Token fetched successfully, now fetch chat history
-  }, []);
-  useEffect(() => {
     if (token) {
       dispatch(
-        fetchChatHistory({
-          rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-          token: token,
-        })
+          fetchChatHistory({
+            rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+            token: token,
+          })
       );
     }
-  }, [token]);
+    dispatch(toggleBotTyping(false));
+    dispatch(toggleUserTyping(true));
+    dispatch(
+        getRemind({
+          rasaServerUrl: `${rasaServerUrl}/gettime`,
+          token: token,
+        })
+    );
+    // Token fetched successfully, now fetch chat history
+  }, [dispatch, rasaServerUrl, token, userId]);
 
   useEffect(() => {
     const pusher = new Pusher("9de03240cc8a5c22c658", {
@@ -102,7 +106,6 @@ export const WidgetLayout = (props) => {
             token: token,
           })
     }
-
     );
 
     // Initial fetch of chat history when the component mounts
@@ -114,16 +117,6 @@ export const WidgetLayout = (props) => {
     };
   }, [token]);
 
-  useEffect(() => {
-    dispatch(toggleBotTyping(false));
-    dispatch(toggleUserTyping(true));
-    dispatch(
-      getRemind({
-        rasaServerUrl: `${rasaServerUrl}/gettime`,
-        token: token,
-      })
-    );
-  }, []);
 
   useEffect(() => {
     if (userId) {
@@ -135,7 +128,7 @@ export const WidgetLayout = (props) => {
         dispatch(setUserId(userIdRef.current));
       }
     }
-  }, [userId]);
+  }, [dispatch, userId]);
   const handleNotificationClick = () => {
     dispatch(setNotify(false));
     dispatch(setToggleWidget(true)); // Open the widget
@@ -149,7 +142,7 @@ export const WidgetLayout = (props) => {
 
     window.addEventListener('message', handleParentMessage);
     return () => window.removeEventListener('message', handleParentMessage);
-  }, []);
+  }, [dispatch]);
   if (embedded) {
     return (
       <AppContext.Provider value={{ userId: userIdRef.current, ...props }}>
@@ -210,8 +203,8 @@ export const WidgetLayout = (props) => {
                       className="flex h-full flex-col items-center justify-center px-4 text-center font-semibold font-sans">
                     Chào mừng bạn đến với hệ thống Moodle Chacochi! Trợ lý ảo đồng
                     hành cùng bạn trên hành trình chinh phục tri thức tại Chacochi.
-                    Hiện tại bạn đang trò chuyện với mình thông qua nhân cách "Friend",
-                    để có thể trò chuyện với nhân cách "Vip" hơn, vui lòng liên hệ
+                    Hiện tại bạn đang trò chuyện với mình thông qua chế độ mặc định.
+                    Để có thể trò chuyện với các chế độ nâng cao, vui lòng liên hệ
                     với admin nhé.
                     <button
                         className="mt-4 rounded bg-[#a78bfa] px-6 py-2 text-black hover:bg-[#8b5cf6]"
@@ -240,33 +233,6 @@ export const WidgetLayout = (props) => {
             </motion.div>
         )}
         {notify && (
-            // <motion.div
-            //   key="notification"
-            //   initial={{ opacity: 1, scale: 0.9, x: 300 }}
-            //   animate={{ opacity: 1, scale: 1, x: 0 }}
-            //   exit={{ opacity: 0, scale: 0.5, x: 300 }}
-            //   transition={{
-            //     duration: 3,
-            //     ease: [0.4, 0.0, 0.2, 1], // Smooth cubic-bezier
-            //   }}
-            //   className="fixed bottom-10 right-5 flex items-center justify-center rounded-full bg-blue-600 p-6 text-white shadow-lg"
-            //   style={{
-            //     backgroundColor: "#bb99ff",
-            //     color: "#fff",
-            //     width: "160px",
-            //     height: "160px",
-            //   }}
-            //   onClick={handleNotificationClick}
-            // >
-            //   <div style={{ textAlign: "center" }}>
-            //     <h5 className="white-text" style={{ margin: 0 }}>
-            //       Hey there 👋
-            //     </h5>
-            //     <p className="white-text" style={{ margin: 0 }}>
-            //       A new message comes!
-            //     </p>
-            //   </div>
-            // </motion.div>
             <motion.div
                 key="notification"
                 initial={{opacity: 0, y: -20, x: 20}}
@@ -309,9 +275,7 @@ export const WidgetLayout = (props) => {
                 </svg>
               </button>
             </motion.div>
-
         )}
-        {/*<Launcher />*/}
       </AnimatePresence>
     </AppContext.Provider>
   );
