@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const roleMap = {
   Default: 0,
-  Professor: 1,
+  Instructor: 1,
   Assistant: 2,
   Friend: 3,
 };

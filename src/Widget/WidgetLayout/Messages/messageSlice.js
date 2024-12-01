@@ -15,7 +15,6 @@ export const fetchBotResponse = createAsyncThunk(
       const response = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
           Authorization: "Bearer " + payload.token,
         },
         method: "POST",
@@ -48,9 +47,9 @@ export const fetchBotResponse = createAsyncThunk(
         const chunk = decoder.decode(value, { stream: true });
         // Dispatch each chunk as it arrives
         thunkAPI.dispatch(updateBotStream(chunk));
-        if (chunk.includes("&start&")) {
-          thunkAPI.dispatch(setBotStream());
-        }
+        // if (chunk.includes("&start&")) {
+        //   thunkAPI.dispatch(setBotStream());
+        // }
       }
 
       thunkAPI.dispatch(toggleBotTyping(false));
@@ -159,7 +158,6 @@ export const getRemind = createAsyncThunk(
       const response = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
           Authorization: "Bearer " + payload.token,
         },
         method: "GET",
@@ -191,14 +189,13 @@ export const setRemindApi = createAsyncThunk(
       const response = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
           Authorization: "Bearer " + payload.token,
         },
         method: "POST",
         body: JSON.stringify(body),
       });
       thunkAPI.dispatch(setRemindTime(body.time));
-      if (response.status === 2000) {
+      if (response.status === 200) {
         toast.success("Setting successfully.");
       } else {
         toast.error("Action failed.");
@@ -218,17 +215,17 @@ export const getToken = createAsyncThunk(
       const response = await fetch(payload.rasaServerUrl, {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          Authorization: "Bearer " + payload.token,
         },
         method: "GET",
       });
       const res = await response.json();
 
       if (!res) {
-        thunkAPI.dispatch(setRole(3));
+        thunkAPI.dispatch(setRole(0));
       }
-      thunkAPI.dispatch(setToken(res.token));
-      return res.token;
+      thunkAPI.dispatch(setToken(res ? res.token : null));
+      return res?.token;
 
       // Parse the response into JSON
     } catch (error) {

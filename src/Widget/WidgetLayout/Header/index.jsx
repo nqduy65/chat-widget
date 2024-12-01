@@ -25,9 +25,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import JellyfishAvatar from "./avatar";
 
-export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
-
-const models = ["Chat GPT 3.5", "Chat GPT 4"];
+export const mapRole = ["Default", "Instructor", "Assistant", "Friend"];
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -48,7 +46,6 @@ export const Header = () => {
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const [selectedModel, setSelectedModel] = useState("Chat GPT 3.5");
   const [remindState, setRemindState] = useState(remind);
   const [remindTimeState, setRemindTimeState] = useState(remindTime);
   const dropdownRef = useDetectClickOutside({
@@ -63,16 +60,16 @@ export const Header = () => {
   // Retrieve the token from localStorage on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+
     if (storedToken) {
       dispatch(setToken(storedToken));
     }
   }, []);
-
-  const handleTokenChange = (event) => {
-    const tokenValue = event.target.value;
-    dispatch(setToken(tokenValue)); // Update the Redux store
-    localStorage.setItem("token", tokenValue); // Store the token in localStorage
-  };
+  // const handleTokenChange = (event) => {
+  //   const tokenValue = event.target.value;
+  //   dispatch(setToken(tokenValue)); // Update the Redux store
+  //   localStorage.setItem("token", tokenValue); // Store the token in localStorage
+  // };
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
@@ -82,19 +79,17 @@ export const Header = () => {
     setRemindTimeState(event.target.value); // Update the context
   };
 
-  const handleModelChange = (event) => {
-    setSelectedModel(event.target.value);
-  };
 
   const handleClearChatButton = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Bạn chắc chứ?",
+      text: "Dữ liệu bị xoá sẽ không thể khôi phục lại đuợc!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Ok, xóa!",
+      cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
         setShowDropdown(!showDropdown);
@@ -117,20 +112,20 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-  const handleSyncChatHistory = async () => {
-    const res = await dispatch(
-      fetchChatHistory({
-        rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
-        token: token,
-      })
-    );
-    if (res.payload.error) {
-      toast.error("Sync Chat failed!")
-    }
-    if (res.payload.message) {
-      toast.success("Sync Chat successfully!")
-    }
-  };
+  // const handleSyncChatHistory = async () => {
+  //   const res = await dispatch(
+  //     fetchChatHistory({
+  //       rasaServerUrl: `${rasaServerUrl}/chat?chatid=${userId}`,
+  //       token: token,
+  //     })
+  //   );
+  //   if (res.payload.error) {
+  //     toast.error("Sync Chat failed!")
+  //   }
+  //   if (res.payload.message) {
+  //     toast.success("Sync Chat successfully!")
+  //   }
+  // };
 
   const handleSaveRemind = async () => {
     await dispatch(
@@ -154,14 +149,16 @@ export const Header = () => {
             style={{borderColor: textColor, borderWidth: enableBotAvatarBorder}}
         >
           {/*<img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />*/}
-          <JellyfishAvatar  />
+          <JellyfishAvatar />
         </div>
         <div className="w-full ">
-          <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">
-            {token
-              ? `${mapRole[role]} ${botSubTitle}`
-              : `${mapRole[3]} ${botSubTitle}`}
+          <div className="text-xl font-semibold antialiased text-white" >{botTitle}</div>
+          <p className="text-amber-50">
+            {/*{token*/}
+            {/*  ? `${mapRole[role]} ${botSubTitle}`*/}
+            {/*  : `${mapRole[0]} ${botSubTitle}`}*/}
+             {mapRole[role]} {botSubTitle}
+
           </p>
         </div>
         <motion.div
@@ -195,14 +192,15 @@ export const Header = () => {
               </label>
               <select
                 id="role"
-                value={token ? role : 3}
+                value={token ? role: "Default"}
                 onChange={handleRoleChange}
                 className="rounded-lg border p-1"
                 style={{ color: textColor, borderColor: textColor }}
-                disabled={!token}
+                //disabled={!token}
               >
                 {Object.entries(roleMap).map((key, role) => (
-                  <option key={key} value={key[1]}>
+                  <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
+                  >
                     {key[0]}
                   </option>
                 ))}
