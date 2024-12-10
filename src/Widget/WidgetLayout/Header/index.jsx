@@ -23,7 +23,7 @@ import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
 import JellyfishAvatar from "./avatar";
 
-export const mapRole = ["Default", "Instructor", "Assistant", "Friend"];
+export const mapRole = ["Default", "Instructor", "Assistant", "Friend", "Analyzer (alpha)"];
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -101,7 +101,6 @@ export const Header = () => {
     setRemindTimeState(remindTime);
   }, [remind, remindTime]);
 
-
   const handleSaveRemind = async () => {
     await dispatch(
       setRemindApi({
@@ -113,6 +112,11 @@ export const Header = () => {
       })
     );
   };
+
+  const display = (value) =>{
+    return value != "Analyzer" ? value : "Analyzer (alpha)";
+  }
+  console.log("Role: ", role);
   return (
     <>
       <div
@@ -169,10 +173,12 @@ export const Header = () => {
                 style={{ color: textColor, borderColor: textColor }}
               >
                 {Object.entries(roleMap).map((key, role) => (
+                    <>
                   <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
                   >
-                    {key[0]}
+                    {display(key[0])}
                   </option>
+                  </>
                 ))}
               </select>
             </li>
