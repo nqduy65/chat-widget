@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="almost done">
+    <list default="true" id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="add voice">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Header/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Header/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Launcher/index.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/messageSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/messageSlice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/BotMessage/TextMessage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/BotMessage/TextMessage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/UserMessage/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/UserMessage/index.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/appSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/appSlice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Widget/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/index.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,22 +52,22 @@
     &quot;assignee&quot;: &quot;chacachien&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/nqduy65/chat-widget.git&quot;,
-    &quot;accountId&quot;: &quot;7ea9325a-1d1b-403c-a7b1-eadc0a24c7d1&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/nqduy65/chat-widget.git",
+    "accountId": "f5c6f59a-c43c-4342-9cbc-99fea1333897"
   },
-  &quot;recentNewPullRequestHead&quot;: {
-    &quot;server&quot;: {
-      &quot;useHttp&quot;: false,
-      &quot;host&quot;: &quot;github.com&quot;,
-      &quot;port&quot;: null,
-      &quot;suffix&quot;: null
+  "recentNewPullRequestHead": {
+    "server": {
+      "useHttp": false,
+      "host": "github.com",
+      "port": null,
+      "suffix": null
     },
-    &quot;owner&quot;: &quot;nqduy65&quot;,
-    &quot;repository&quot;: &quot;chat-widget&quot;
+    "owner": "nqduy65",
+    "repository": "chat-widget"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -80,20 +76,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#14 on dev/auth__v2&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/phatnguyen/Document/Uni/DACN/chat-widget_DN&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "#15 on dev/auth__v2",
+    "last_opened_file_path": "/Users/phatnguyen/Document/Uni/DACN/chat-widget_DN",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -157,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729628260273</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="add voice">
+      <option name="closed" value="true" />
+      <created>1733900387634</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733900387634</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +224,7 @@
     <MESSAGE value="persisted data &amp; display role" />
     <MESSAGE value="adjust alert" />
     <MESSAGE value="adjust alert when click button" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjust alert when click button" />
+    <MESSAGE value="add voice" />
+    <option name="LAST_COMMIT_MESSAGE" value="add voice" />
   </component>
 </project>
