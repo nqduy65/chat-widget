@@ -5,6 +5,7 @@ export const roleMap = {
   Instructor: 1,
   Assistant: 2,
   Friend: 3,
+  Analyzer:4
 };
 const initialState = {
   toggleWidget: false,

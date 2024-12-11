@@ -11,37 +11,51 @@ export const BotTyping = () => {
   // Local state to manage incremental botStream rendering
   const [displayedStream, setDisplayedStream] = useState("");
 
+  // useEffect(() => {
+  //   let animationFrameId;
+  //   let charIndex = 0;
+  //   const renderNextChunk = async () => {
+  //     if (charIndex < nextChunk.length) {
+  //       const nextChar = nextChunk[charIndex];
+  //
+  //       // Only append to displayedStream if nextChar is defined and not null
+  //       if (nextChar !== undefined && nextChar !== null) {
+  //         setDisplayedStream((prevStream) => prevStream + nextChar);
+  //       }
+  //
+  //       charIndex++;
+  //       animationFrameId = requestAnimationFrame(renderNextChunk); // Smooth animation rendering
+  //     }
+  //   };
+  //   renderNextChunk();
+  //
+  //   return () => {
+  //     if (animationFrameId) {
+  //       cancelAnimationFrame(animationFrameId);
+  //     }
+  //   };
+  // }, [botTyping, nextChunk]);
   useEffect(() => {
-    let animationFrameId;
-    let charIndex = 0;
-    function sleep(ms) {
-      return new Promise((res) => setTimeout(res, ms));
-    }
-    const renderNextChunk = async () => {
-      if (charIndex < nextChunk.length) {
-        const nextChar = nextChunk[charIndex];
+    if (!nextChunk) return;
 
-        // Only append to displayedStream if nextChar is defined and not null
-        if (nextChar !== undefined && nextChar !== null) {
-          setDisplayedStream((prevStream) => prevStream + nextChar);
-        }
+    let timeoutId;
+    const chars = nextChunk.split('');
 
-        charIndex++;
-        animationFrameId = requestAnimationFrame(renderNextChunk); // Smooth animation rendering
-      }
-      await sleep(500);
+    const renderNextChar = (index) => {
+      if (index >= chars.length) return;
+
+      setDisplayedStream(prevStream => prevStream + chars[index]);
+
+      // Reduce timeout to make it faster
+      timeoutId = setTimeout(() => renderNextChar(index + 1), 5);
     };
-    //sleep 1 second
-    renderNextChunk();
 
-    // Cleanup on unmount or when botTyping changes
+    renderNextChar(0);
+
     return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [botTyping, nextChunk]); // Trigger effect on botTyping or nextChunk updates
-
+  }, [nextChunk]);
   return (
     botTyping && (
       <div className="flex space-x-1">
