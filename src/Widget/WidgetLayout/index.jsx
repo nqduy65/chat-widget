@@ -82,7 +82,7 @@ export const WidgetLayout = (props) => {
         })
     );
     // Token fetched successfully, now fetch chat history
-  }, [dispatch, rasaServerUrl, token, userId]);
+  }, [dispatch, rasaServerUrl, token, userId, toggleWidget]);
 
   useEffect(() => {
     const pusher = new Pusher("9de03240cc8a5c22c658", {
