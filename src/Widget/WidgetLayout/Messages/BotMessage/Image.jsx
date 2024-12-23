@@ -4,6 +4,7 @@ import { formattedTs } from "../utils";
 
 export const Image = ({ showBotAvatar, imageUrl, ts }) => {
   const appContext = useContext(AppContext);
+
   const { botAvatar } = appContext;
   return (
     <div className="flex space-x-1">
@@ -16,7 +17,7 @@ export const Image = ({ showBotAvatar, imageUrl, ts }) => {
       </div>
       <div className="flex  flex-col space-y-1">
         <div
-          className={`w-fit min-w-[10%] max-w-[75%] ml-4 self-start whitespace-pre-line  break-words text-sm text-white`}
+          className={`ml-4 w-fit min-w-[10%] max-w-[75%] self-start whitespace-pre-line  break-words text-sm text-white`}
         >
           <img className="rounded-xl shadow-sm" src={imageUrl} alt="imgAlt" />
         </div>

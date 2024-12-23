@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="add voice">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/BotMessage/TextMessage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/BotMessage/TextMessage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/UserMessage/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/WidgetLayout/Messages/UserMessage/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/appSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/appSlice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Widget/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Widget/index.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="develop" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;chacachien&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/nqduy65/chat-widget.git",
+    "accountId": "f5c6f59a-c43c-4342-9cbc-99fea1333897"
+  },
+  "recentNewPullRequestHead": {
+    "server": {
+      "useHttp": false,
+      "host": "github.com",
+      "port": null,
+      "suffix": null
+    },
+    "owner": "nqduy65",
+    "repository": "chat-widget"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2nKKurvFgHzgNUJarqDX5X3JMub" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "#15 on dev/auth__v2",
+    "last_opened_file_path": "/Users/phatnguyen/Document/Uni/DACN/chat-widget_DN",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23339.15" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="280a0964-721f-4f2c-98a5-31fefea00799" name="Changes" comment="" />
+      <created>1728716552195</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728716552195</updated>
+      <workItem from="1728716553296" duration="7615000" />
+      <workItem from="1728725199101" duration="10537000" />
+      <workItem from="1728910622636" duration="40097000" />
+      <workItem from="1729179939335" duration="7815000" />
+      <workItem from="1729195090793" duration="4000" />
+      <workItem from="1729218596907" duration="625000" />
+      <workItem from="1729328319716" duration="2000" />
+      <workItem from="1729437693518" duration="13982000" />
+      <workItem from="1729695304547" duration="4638000" />
+      <workItem from="1730213521240" duration="10000" />
+      <workItem from="1732104462183" duration="4045000" />
+      <workItem from="1732174202783" duration="11533000" />
+      <workItem from="1732539757486" duration="2276000" />
+      <workItem from="1732726757504" duration="33765000" />
+      <workItem from="1733054236583" duration="7288000" />
+    </task>
+    <task id="LOCAL-00001" summary="get history almost done.">
+      <option name="closed" value="true" />
+      <created>1728720038355</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1728720038355</updated>
+    </task>
+    <task id="LOCAL-00002" summary="persisted data &amp; display role">
+      <option name="closed" value="true" />
+      <created>1728730996932</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1728730996932</updated>
+    </task>
+    <task id="LOCAL-00003" summary="adjust alert">
+      <option name="closed" value="true" />
+      <created>1729626823143</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729626823143</updated>
+    </task>
+    <task id="LOCAL-00004" summary="adjust alert when click button">
+      <option name="closed" value="true" />
+      <created>1729628260273</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1729628260273</updated>
+    </task>
+    <task id="LOCAL-00005" summary="add voice">
+      <option name="closed" value="true" />
+      <created>1733900387634</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733900387634</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="d918b89b-9f87-4e5f-abc5-b6b2e9482cf5" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="52" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="38" />
+                  <entry key="Table.GitHub.CommitStatus.ColumnIdWidth" value="28" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="dev/auth_v2" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="d918b89b-9f87-4e5f-abc5-b6b2e9482cf5">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/dev/notification" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="get history almost done." />
+    <MESSAGE value="persisted data &amp; display role" />
+    <MESSAGE value="adjust alert" />
+    <MESSAGE value="adjust alert when click button" />
+    <MESSAGE value="add voice" />
+    <option name="LAST_COMMIT_MESSAGE" value="add voice" />
+  </component>
+</project>

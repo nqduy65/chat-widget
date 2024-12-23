@@ -48,7 +48,7 @@ export const TextMessage = ({
       </div>
       <div className="flex min-w-[10%] max-w-[80%] flex-col space-x-2">
         <div
-          className={`w-fit text-sm ${borderStyle}  whitespace-pre-line  break-words px-[15px] py-[8px]`}
+          className={`w-fit text-sm ${borderStyle}  whitespace-pre-line  break-words px-[15px] py-[8px] font-sans`}
           style={{ color: botMsgColor, backgroundColor: botMsgBackgroundColor }}
           dir="auto"
         >

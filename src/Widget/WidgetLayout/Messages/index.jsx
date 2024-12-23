@@ -5,14 +5,7 @@ import { useScrollBottom } from "../../../hooks/useScrollBottom";
 import AppContext from "../../AppContext";
 import { BotTyping } from "./BotMessage/BotTyping";
 import { Chats } from "./Chats";
-import {
-  fetchBotResponse,
-  setUserGreeted,
-  setUserTypingPlaceholder,
-  toggleBotTyping,
-  toggleUserTyping,
-} from "./messageSlice";
-
+import { fetchChatHistory } from "./messageSlice";
 const MessagesDiv = styled.div`
 /* width */
 ::-webkit-scrollbar {
@@ -35,42 +28,28 @@ const MessagesDiv = styled.div`
 }
 `;
 export const Messages = () => {
-  const dispatch = useDispatch();
+  const botTyping = useSelector((state) => state.messageState.botTyping);
   const appContext = useContext(AppContext);
+  const { widgetColor } = appContext;
 
-  const { widgetColor, initialPayload, rasaServerUrl, userId } = appContext;
-  const { messages, userGreeted } = useSelector((state) => state.messageState);
-  const bottomRef = useScrollBottom(messages);
-  useEffect(() => {
-    if (!userGreeted && messages.length < 1) {
-      dispatch(setUserGreeted(true));
-      dispatch(setUserTypingPlaceholder("Please wait while bot is typing..."));
-      dispatch(toggleBotTyping(true));
-      dispatch(toggleUserTyping(false));
-      dispatch(
-        fetchBotResponse({
-          rasaServerUrl,
-          message: initialPayload,
-          sender: userId,
-        })
-      );
-    }
-  }, [
-    dispatch,
-    initialPayload,
-    messages.length,
-    rasaServerUrl,
-    userGreeted,
-    userId,
-  ]);
+  const { messages } = useSelector((state) => state.messageState);
+  const { bottomRef, handleScroll } = useScrollBottom([messages, botTyping]);
+
   return (
-    <MessagesDiv
-      className="absolute top-[17%] flex h-[72%] w-full flex-col space-y-1 self-start overflow-y-auto rounded-t-[1.2rem] bg-white p-2 pt-2"
-      widgetColor={widgetColor}
-    >
-      <Chats messages={messages} />
-      <BotTyping />
-      <div ref={bottomRef}></div>
-    </MessagesDiv>
+    <>
+      <MessagesDiv
+        className="absolute top-[17%] flex h-[72%] w-full flex-col space-y-1 self-start overflow-y-auto rounded-t-[1.2rem] bg-white p-2 pt-2"
+        widgetColor={widgetColor}
+        onScroll={handleScroll}
+      >
+        <Chats messages={messages} />
+        {botTyping && (
+          <div className="flex flex-col space-y-2">
+            <BotTyping />
+          </div>
+        )}
+        <div ref={bottomRef}></div>
+      </MessagesDiv>
+    </>
   );
 };
