@@ -5,7 +5,11 @@ import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
 import { useDispatch, useSelector } from "react-redux";
-import { roleMap, setRole, setToken } from "../../widgetSlice";
+import {
+  roleMap,
+  setRole,
+  setToken,
+} from "../../widgetSlice";
 import {
   removeAllMessages,
   resetBot,
@@ -17,10 +21,9 @@ import {
 import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
+import JellyfishAvatar from "./avatar";
 
-export const mapRole = ["Default", "Professor", "Assistant", "Friend"];
-
-const models = ["Chat GPT 3.5", "Chat GPT 4"];
+export const mapRole = ["Default", "Instructor", "Assistant", "Friend", "Analyzer (alpha)"];
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -32,7 +35,6 @@ export const Header = () => {
   const {
     botSubTitle,
     botTitle,
-    botAvatar,
     chatHeaderCss,
     rasaServerUrl,
     userId,
@@ -41,7 +43,6 @@ export const Header = () => {
   const { textColor, backgroundColor, enableBotAvatarBorder } = chatHeaderCss;
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const [selectedModel, setSelectedModel] = useState("Chat GPT 3.5");
   const [remindState, setRemindState] = useState(remind);
   const [remindTimeState, setRemindTimeState] = useState(remindTime);
   const dropdownRef = useDetectClickOutside({
@@ -56,6 +57,7 @@ export const Header = () => {
   // Retrieve the token from localStorage on component mount
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+
     if (storedToken) {
       dispatch(setToken(storedToken));
     }
@@ -68,20 +70,16 @@ export const Header = () => {
   const handleRemindTimeChange = (event) => {
     setRemindTimeState(event.target.value); // Update the context
   };
-
-  const handleModelChange = (event) => {
-    setSelectedModel(event.target.value);
-  };
-
   const handleClearChatButton = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Bạn chắc chứ?",
+      text: "Dữ liệu bị xoá sẽ không thể khôi phục lại đuợc!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Ok, xóa!",
+      cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
         setShowDropdown(!showDropdown);
@@ -98,7 +96,6 @@ export const Header = () => {
       }
     });
   };
-
   useEffect(() => {
     setRemindState(remind);
     setRemindTimeState(remindTime);
@@ -115,6 +112,11 @@ export const Header = () => {
       })
     );
   };
+
+  const display = (value) =>{
+    return value != "Analyzer" ? value : "Analyzer (alpha)";
+  }
+  console.log("Role: ", role);
   return (
     <>
       <div
@@ -122,27 +124,26 @@ export const Header = () => {
         style={{ backgroundColor, color: textColor }}
       >
         <div
-          className="shrink-0 rounded-full border-[1px] p-2"
-          style={{ borderColor: textColor, borderWidth: enableBotAvatarBorder }}
+            className="shrink-0 rounded-full border-[1px] h-16 w-16"
+            style={{borderColor: textColor, borderWidth: enableBotAvatarBorder}}
         >
-          <img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />
+          {/*<img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />*/}
+          <JellyfishAvatar />
         </div>
         <div className="w-full ">
-          <div className="text-xl font-semibold antialiased">{botTitle}</div>
-          <p className="">
-            {token
-              ? `${mapRole[role]} ${botSubTitle}`
-              : `${mapRole[3]} ${botSubTitle}`}
+          <div className="text-xl font-semibold antialiased text-white" >{botTitle}</div>
+          <p className="text-amber-50">
+             {mapRole[role]} {botSubTitle}
           </p>
         </div>
         <motion.div
-          whileHover={{ scale: 1.2 }}
-          className="flex"
-          onClick={() => {
-            setShowDropdown(!showDropdown);
-          }}
+            whileHover={{scale: 1.2}}
+            className="flex"
+            onClick={() => {
+              setShowDropdown(!showDropdown);
+            }}
         >
-          <Bars3BottomRightIcon className="h-7 w-7" />
+          <Bars3BottomRightIcon className="h-7 w-7"/>
         </motion.div>
       </div>
       {showDropdown && (
@@ -161,39 +162,23 @@ export const Header = () => {
             }}
           >
             <li className="p-2">
-              <label htmlFor="model" className="mr-2">
-                Model:
-              </label>
-              <select
-                id="model"
-                value={selectedModel}
-                onChange={handleModelChange}
-                className="rounded-lg border p-1"
-                style={{ color: textColor, borderColor: textColor }}
-              >
-                {models.map((model, idx) => (
-                  <option key={idx} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </li>
-            <li className="p-2">
               <label htmlFor="role" className="mr-2">
                 Role:
               </label>
               <select
                 id="role"
-                value={token ? role : 3}
+                value={token ? role: "Default"}
                 onChange={handleRoleChange}
                 className="rounded-lg border p-1"
                 style={{ color: textColor, borderColor: textColor }}
-                disabled={!token}
               >
                 {Object.entries(roleMap).map((key, role) => (
-                  <option key={key} value={key[1]}>
-                    {key[0]}
+                    <>
+                  <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
+                  >
+                    {display(key[0])}
                   </option>
+                  </>
                 ))}
               </select>
             </li>
@@ -228,23 +213,21 @@ export const Header = () => {
               </div>
             </li>
 
-            <li className="p-2">
-              <div
-                className="flex cursor-pointer hover:opacity-70"
-                onClick={() => handleClearChatButton()}
-              >
-                <div className="flex items-center justify-center pl-2">
-                  <Icon name={"Clear Chat"} />
+              <li className="p-2">
+                <div
+                    className="flex cursor-pointer hover:opacity-70"
+                    onClick={() => handleClearChatButton()}
+                >
+                  <div className="flex items-center justify-center pl-2">
+                    <Icon name={"Clear Chat"} />
+                  </div>
+                  <div>
+                    <span className="block py-2 px-2">{"Xóa đoạn Chat"}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="block py-2 px-2">{"Clear Chat"}</span>
-                </div>
-              </div>
-
-              {/* Add Save button below Clear Chat */}
-            </li>
-          </ul>
-        </div>
+              </li>
+            </ul>
+          </div>
       )}
     </>
   );

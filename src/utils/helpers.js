@@ -1,4 +1,3 @@
-import axios from "axios";
 
 export const createUserMessage = (message) => {
   return {
@@ -9,31 +8,3 @@ export const createUserMessage = (message) => {
   };
 };
 
-export const getBotResponse = async ({
-  rasaServerUrl,
-  sender,
-  courseId,
-  message,
-  metadata = {},
-}) => {
-  try {
-    const response = await axios({
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      method: "post",
-      url: rasaServerUrl,
-      data: {
-        content: message,
-        chatId: 2,
-        role: 1,
-        courseId: courseId,
-      },
-    });
-    return response.data.message;
-  } catch (error) {
-    console.log("error occurred fetching bot response", error);
-    return [];
-  }
-};
