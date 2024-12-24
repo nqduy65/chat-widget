@@ -47,7 +47,7 @@ export const BotTyping = () => {
       setDisplayedStream(prevStream => prevStream + chars[index]);
 
       // Reduce timeout to make it faster
-      timeoutId = setTimeout(() => renderNextChar(index + 1), 5);
+      timeoutId = setTimeout(() => renderNextChar(index + 1), 0);
     };
 
     renderNextChar(0);

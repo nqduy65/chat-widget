@@ -131,10 +131,26 @@ export const Header = () => {
           <JellyfishAvatar />
         </div>
         <div className="w-full ">
-          <div className="text-xl font-semibold antialiased text-white" >{botTitle}</div>
-          <p className="text-amber-50">
-             {mapRole[role]} {botSubTitle}
-          </p>
+          <div className="text-xl font-semibold antialiased text-white">{botTitle}</div>
+          {/*<p className="text-amber-50">*/}
+          {/*  {mapRole[role]} {botSubTitle}*/}
+          {/*</p>*/}
+          <select
+              id="role"
+              value={token ? role : "Default"}
+              onChange={handleRoleChange}
+              className="rounded-lg border p-1"
+              style={{color: textColor, borderColor: textColor}}
+          >
+            {Object.entries(roleMap).map((key, role) => (
+                <>
+                  <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
+                  >
+                    {display(key[0])}
+                  </option>
+                </>
+            ))}
+          </select>
         </div>
         <motion.div
             whileHover={{scale: 1.2}}
@@ -147,41 +163,41 @@ export const Header = () => {
         </motion.div>
       </div>
       {showDropdown && (
-        <div
-          id="dropdown"
-          className="absolute right-5 top-16 z-50 w-fit cursor-default divide-y divide-gray-100 rounded-xl bg-white shadow-lg"
-          ref={dropdownRef}
-        >
-          <ul
-            className="rounded-lg py-1 text-sm"
-            aria-labelledby="dropdownDefault"
-            style={{
+          <div
+              id="dropdown"
+              className="absolute right-5 top-16 z-50 w-fit cursor-default divide-y divide-gray-100 rounded-xl bg-white shadow-lg"
+              ref={dropdownRef}
+          >
+            <ul
+                className="rounded-lg py-1 text-sm"
+                aria-labelledby="dropdownDefault"
+                style={{
               backgroundColor,
               color: textColor,
               border: `1px solid ${textColor}`,
             }}
           >
-            <li className="p-2">
-              <label htmlFor="role" className="mr-2">
-                Role:
-              </label>
-              <select
-                id="role"
-                value={token ? role: "Default"}
-                onChange={handleRoleChange}
-                className="rounded-lg border p-1"
-                style={{ color: textColor, borderColor: textColor }}
-              >
-                {Object.entries(roleMap).map((key, role) => (
-                    <>
-                  <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
-                  >
-                    {display(key[0])}
-                  </option>
-                  </>
-                ))}
-              </select>
-            </li>
+            {/*<li className="p-2">*/}
+            {/*  <label htmlFor="role" className="mr-2">*/}
+            {/*    Role:*/}
+            {/*  </label>*/}
+            {/*  <select*/}
+            {/*    id="role"*/}
+            {/*    value={token ? role: "Default"}*/}
+            {/*    onChange={handleRoleChange}*/}
+            {/*    className="rounded-lg border p-1"*/}
+            {/*    style={{ color: textColor, borderColor: textColor }}*/}
+            {/*  >*/}
+            {/*    {Object.entries(roleMap).map((key, role) => (*/}
+            {/*        <>*/}
+            {/*      <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}*/}
+            {/*      >*/}
+            {/*        {display(key[0])}*/}
+            {/*      </option>*/}
+            {/*      </>*/}
+            {/*    ))}*/}
+            {/*  </select>*/}
+            {/*</li>*/}
             <li className="p-2">
               <div className="flex items-center">
                 <label htmlFor="remind" className="mr-2">
