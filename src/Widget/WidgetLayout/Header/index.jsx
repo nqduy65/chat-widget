@@ -1,6 +1,6 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
 import { FaSave } from "react-icons/fa"; // Import your icon
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
@@ -43,7 +43,6 @@ export const Header = () => {
   const appContext = useContext(AppContext);
 
   const {
-    botSubTitle,
     botTitle,
     chatHeaderCss,
     rasaServerUrl,
@@ -76,7 +75,7 @@ export const Header = () => {
     if (storedToken) {
       dispatch(setToken(storedToken));
     }
-  }, []);
+  }, [dispatch]);
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
@@ -127,7 +126,6 @@ export const Header = () => {
       })
     );
   };
-token = "aaaa";
   return (
     <>
       <div
