@@ -187,8 +187,8 @@ export const WidgetLayout = (props) => {
             </svg>
           </button>
         </div>
-        <ToastContainer/>
-
+        <ToastContainer />
+        <button onClick={() => dispatch(setToggleWidget(!toggleWidget))}>Open</button>
         {toggleWidget && (
             <motion.div
                 className="fixed bottom-5 right-5 z-50 flex h-[579px] w-[400px]  flex-col rounded-[1.8rem]  bg-white font-lato  ring-1  ring-black/5    xs:right-0 xs:h-[calc(100%-100px)] xs:w-full"
