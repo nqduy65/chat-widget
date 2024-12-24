@@ -216,7 +216,7 @@ export const WidgetLayout = (props) => {
                               fetchBotResponse({
                                 rasaServerUrl: `${rasaServerUrl}/chat`,
                                 message: "Xin chào",
-                                role: role,
+                                role: role.number,
                                 sender: userId,
                                 courseId: 1,
                                 token: token,

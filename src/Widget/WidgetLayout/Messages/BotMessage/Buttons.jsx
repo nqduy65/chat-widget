@@ -74,7 +74,7 @@ export const Buttons = ({ buttons, index, showBotAvatar, ts, callback }) => {
                     fetchBotResponse({
                       rasaServerUrl,
                       message: payload,
-                      role: role,
+                      role: role.number,
                       sender: userId,
                       courseId: courseId,
                       token: token,

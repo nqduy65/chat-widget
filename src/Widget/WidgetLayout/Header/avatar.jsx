@@ -5,7 +5,7 @@ const JellyfishAvatar = () => {
     const {role} = useSelector((state) => state.widgetState);
     console.log('ROLE: ', role);
     console.log(typeof(role));
-        switch (Number(role)) {
+        switch (Number(role.number)) {
                 case "0":
                         return (
                             <svg width="100%"
