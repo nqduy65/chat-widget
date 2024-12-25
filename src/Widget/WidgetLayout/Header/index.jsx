@@ -142,7 +142,7 @@ export const Header = () => {
           <div className="text-xl font-semibold antialiased text-white">{botTitle}</div>
           <button
               onClick={() => setIsOpen(!isOpen)}
-              className="select-button mt-2 flex w-48 items-center justify-between rounded-lg border bg-opacity-20 bg-white p-2 text-left text-white hover:bg-opacity-30"
+              className="select-button mt-2 flex w-40 items-center rounded-lg bg-opacity-20 text-left text-white hover:bg-gray-700/30 gap-2"
               style={{borderColor: textColor}}
           >
             {role.display}
