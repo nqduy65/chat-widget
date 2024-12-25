@@ -17,7 +17,6 @@ const initialState = {
   role: roleMap.Default,
   token: "",
 };
-debugger;
 export const widgetSlice = createSlice({
   name: "widget",
   initialState,
