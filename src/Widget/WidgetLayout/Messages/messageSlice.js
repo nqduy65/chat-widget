@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { setRemind, setRemindTime, setRole, setToken } from "../../widgetSlice";
+import {roleMap, setRemind, setRemindTime, setRole, setToken} from "../../widgetSlice";
 import { toast } from "react-toastify";
 
 export const fetchBotResponse = createAsyncThunk(
@@ -9,7 +9,7 @@ export const fetchBotResponse = createAsyncThunk(
       const body = {
         content: payload.message,
         chatId: payload.sender,
-        role: payload.role,
+        role: payload.role.number,
         courseId: payload.courseId,
       };
       const response = await fetch(payload.rasaServerUrl, {
@@ -228,7 +228,7 @@ export const getToken = createAsyncThunk(
       const res = await response.json();
 
       if (!res) {
-        thunkAPI.dispatch(setRole(0));
+        thunkAPI.dispatch(setRole(roleMap.Default));
       }
       thunkAPI.dispatch(setToken(res ? res.token : null));
       return res?.token;

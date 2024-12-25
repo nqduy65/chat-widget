@@ -1,6 +1,6 @@
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"; // Add CheckIcon or any other icon
 import { FaSave } from "react-icons/fa"; // Import your icon
-import { useContext, useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import AppContext from "../../AppContext";
 import { motion } from "framer-motion";
 import { useDetectClickOutside } from "../../../hooks/useDetectClickOutside";
@@ -22,18 +22,27 @@ import { Icon } from "./Icons";
 import { IconButton } from "./IconButton";
 import Swal from "sweetalert2";
 import JellyfishAvatar from "./avatar";
+import * as Tooltip from '@radix-ui/react-tooltip';
+import {ChevronDownIcon} from "@heroicons/react/20/solid";
 
-export const mapRole = ["Default", "Instructor", "Assistant", "Friend", "Analyzer (alpha)"];
+
+const roleDescriptions = {
+  Default: "Nếu bạn không biết chọn role gì",
+  Instructor: "Tìm kiếm khóa học và hỏi đáp nội dung bài học",
+  Assistant: "Hỏi đáp thông tin cá nhân",
+  Friend: "Trò chuyện vui vẻ, tán gẫu",
+  Analyzer: "Phân tích kết quả học tâp"
+};
+
 
 export const Header = () => {
   const dispatch = useDispatch();
-  let { role, remindTime, remind, token } = useSelector(
-    (state) => state.widgetState
+  let {role, remindTime, remind, token} = useSelector(
+      (state) => state.widgetState
   );
   const appContext = useContext(AppContext);
 
   const {
-    botSubTitle,
     botTitle,
     chatHeaderCss,
     rasaServerUrl,
@@ -49,9 +58,14 @@ export const Header = () => {
     setShowModal: setShowDropdown,
   });
 
-  const handleRoleChange = (event) => {
-    const roleKey = event.target.value;
-    dispatch(setRole(roleKey)); // Store the key (1, 2, 3) in context
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRefSelecter = useDetectClickOutside({
+    setShowModal: setIsOpen,
+  });
+  const handleChange = (choseRole) => {
+    // Call the parent's handleRoleChange function
+    dispatch(setRole(choseRole));
+    setIsOpen(false);
   };
 
   // Retrieve the token from localStorage on component mount
@@ -61,7 +75,7 @@ export const Header = () => {
     if (storedToken) {
       dispatch(setToken(storedToken));
     }
-  }, []);
+  }, [dispatch]);
 
   const handleRemindToggle = () => {
     setRemindState((prev) => !prev);
@@ -112,11 +126,6 @@ export const Header = () => {
       })
     );
   };
-
-  const display = (value) =>{
-    return value != "Analyzer" ? value : "Analyzer (alpha)";
-  }
-  console.log("Role: ", role);
   return (
     <>
       <div
@@ -127,15 +136,20 @@ export const Header = () => {
             className="shrink-0 rounded-full border-[1px] h-16 w-16"
             style={{borderColor: textColor, borderWidth: enableBotAvatarBorder}}
         >
-          {/*<img className="h-12 w-12" src={botAvatar} alt="Bot Logo" />*/}
           <JellyfishAvatar />
         </div>
         <div className="w-full ">
-          <div className="text-xl font-semibold antialiased text-white" >{botTitle}</div>
-          <p className="text-amber-50">
-             {mapRole[role]} {botSubTitle}
-          </p>
+          <div className="text-xl font-semibold antialiased text-white">{botTitle}</div>
+          <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="select-button mt-2 flex w-40 items-center rounded-lg bg-opacity-20 text-left text-white hover:bg-gray-700/30 gap-2"
+              style={{borderColor: textColor}}
+          >
+            {role.display}
+            <ChevronDownIcon className={`h-5 w-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}/>
+          </button>
         </div>
+
         <motion.div
             whileHover={{scale: 1.2}}
             className="flex"
@@ -146,13 +160,48 @@ export const Header = () => {
           <Bars3BottomRightIcon className="h-7 w-7"/>
         </motion.div>
       </div>
-      {showDropdown && (
-        <div
+      {isOpen && (
+          <Tooltip.Provider>
+            <div className="absolute z-[100] w-48 rounded-xl bg-white shadow-lg mt-1 left-20 top-24" ref={dropdownRefSelecter}>
+                    {Object.entries(roleMap).map(([key, roleData]) => (
+                        <Tooltip.Root key={roleData.value}>
+                          <Tooltip.Trigger asChild>
+                            <div
+                                className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                                    !token && !["default"].includes(key.toLowerCase()) ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                                onClick={() => {
+                                  if (token || ["default"].includes(key.toLowerCase())) {
+                                    handleChange(roleData);
+                                    setIsOpen(false);
+                                  }
+                                }}
+                            >
+                              {roleData.display}
+                            </div>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                                className="rounded-md bg-black px-4 py-2 text-sm text-white animate-fadeIn max-w-[200px] break-words z-[1000]"
+                                sideOffset={5}
+                            >
+                              {roleDescriptions[key]}
+                              <Tooltip.Arrow className="fill-black" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                        </Tooltip.Root>
+                    ))}
+                  </div>
+          </Tooltip.Provider>
+        )}
+{
+  showDropdown && (
+      <div
           id="dropdown"
           className="absolute right-5 top-16 z-50 w-fit cursor-default divide-y divide-gray-100 rounded-xl bg-white shadow-lg"
           ref={dropdownRef}
-        >
-          <ul
+      >
+        <ul
             className="rounded-lg py-1 text-sm"
             aria-labelledby="dropdownDefault"
             style={{
@@ -160,45 +209,24 @@ export const Header = () => {
               color: textColor,
               border: `1px solid ${textColor}`,
             }}
-          >
-            <li className="p-2">
-              <label htmlFor="role" className="mr-2">
-                Role:
+        >
+          <li className="p-2">
+            <div className="flex items-center">
+              <label htmlFor="remind" className="mr-2">
+                Remind:
               </label>
-              <select
-                id="role"
-                value={token ? role: "Default"}
-                onChange={handleRoleChange}
-                className="rounded-lg border p-1"
-                style={{ color: textColor, borderColor: textColor }}
-              >
-                {Object.entries(roleMap).map((key, role) => (
-                    <>
-                  <option key={key} value={key[1]} disabled={!token && !["default"].includes(key[0].toLowerCase())}
-                  >
-                    {display(key[0])}
-                  </option>
-                  </>
-                ))}
-              </select>
-            </li>
-            <li className="p-2">
-              <div className="flex items-center">
-                <label htmlFor="remind" className="mr-2">
-                  Remind:
-                </label>
-                <input
+              <input
                   type="checkbox"
                   id="remind"
                   checked={remindState}
                   onChange={handleRemindToggle}
-                />
-                {remindState && userId === "2" && (
+              />
+              {remindState && userId === "2" && (
                   <input
-                    type="time"
-                    value={remindTimeState}
-                    onChange={handleRemindTimeChange}
-                    className="ml-2 rounded-lg border p-1"
+                      type="time"
+                      value={remindTimeState}
+                      onChange={handleRemindTimeChange}
+                      className="ml-2 rounded-lg border p-1"
                     style={{ color: textColor, borderColor: textColor }}
                   />
                 )}
@@ -212,7 +240,6 @@ export const Header = () => {
                 </div>
               </div>
             </li>
-
               <li className="p-2">
                 <div
                     className="flex cursor-pointer hover:opacity-70"

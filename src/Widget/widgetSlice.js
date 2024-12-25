@@ -1,22 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const roleMap = {
-  Default: 0,
-  Instructor: 1,
-  Assistant: 2,
-  Friend: 3,
-  Analyzer:4
+  Default: { value: "Default", display: "Default", number: 0 },
+  Instructor: { value: "Instructor", display: "Instructor", number:1 },
+  Assistant: { value: "Assistant", display: "Assistant", number:2 },
+  Friend: { value: "Friend", display: "Friend", number:3 },
+  Analyzer: { value: "Analyzer", display: "Analyzer (beta)", number:4 },
 };
+
 const initialState = {
   toggleWidget: false,
   notify: false,
   userId: null,
   remind: false,
   remindTime: "",
-  role: roleMap["Default"],
+  role: roleMap.Default,
   token: "",
 };
-
 export const widgetSlice = createSlice({
   name: "widget",
   initialState,

@@ -35,19 +35,42 @@ export const BotTyping = () => {
   //     }
   //   };
   // }, [botTyping, nextChunk]);
+
+
+  // useEffect(() => {
+  //   if (!nextChunk) return;
+  //
+  //   let timeoutId;
+  //   const chars = nextChunk.split('');
+  //
+  //   const renderNextChar = (index) => {
+  //     if (index >= chars.length) return;
+  //
+  //     setDisplayedStream(prevStream => prevStream + chars[index]);
+  //
+  //     // Reduce timeout to make it faster
+  //     timeoutId = setTimeout(() => renderNextChar(index + 1), 0);
+  //   };
+  //
+  //   renderNextChar(0);
+  //
+  //   return () => {
+  //     if (timeoutId) clearTimeout(timeoutId);
+  //   };
+  // }, [nextChunk]);
+
   useEffect(() => {
     if (!nextChunk) return;
 
     let timeoutId;
-    const chars = nextChunk.split('');
+    const chars = Array.from(nextChunk); // Use Array.from to handle multi-byte characters properly.
 
     const renderNextChar = (index) => {
       if (index >= chars.length) return;
-
-      setDisplayedStream(prevStream => prevStream + chars[index]);
+      setDisplayedStream(prevStream => prevStream + nextChunk);
 
       // Reduce timeout to make it faster
-      timeoutId = setTimeout(() => renderNextChar(index + 1), 5);
+      timeoutId = setTimeout(() => renderNextChar(index + 1), 30);
     };
 
     renderNextChar(0);

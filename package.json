@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "@heroicons/react": "^2.0.13",
+    "@radix-ui/react-tooltip": "^1.1.6",
     "@reduxjs/toolkit": "^1.9.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
